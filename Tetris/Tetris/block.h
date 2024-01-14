@@ -24,12 +24,11 @@ private:
 	void genetrate3NonCenterPoints(Point p1, Point p2, Point p3);
 
 	char** fromBlockToMatrix();
-	void fromMatrixToBlock(char ** matrix, int matrixDimension);
-	void rotateMatrixClockwise(char** matrix, int Dimension);
-	void freeMatrix(char** matrix, int Dimension);
-	void rotateITetremino();
-	bool ITetreminoBlockOnSameX();
-
+	void fromMatrixToBlock(char ** matrix);
+	void rotateMatrixClockwise(char** matrix);
+	void freeMatrix(char** matrix);
+	void fixITetereminoLastPoint();
+	void increaseRotateRightAmount();
 	eTetriminoShape blockShape;
 };
 #endif
