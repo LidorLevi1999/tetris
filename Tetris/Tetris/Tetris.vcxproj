@@ -186,8 +186,8 @@
     <ClCompile Include="board.cpp" />
     <ClCompile Include="gameConfig.cpp" />
     <ClCompile Include="general.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="point.cpp" />
-    <ClCompile Include="Tetris.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="block.h" />

@@ -8,46 +8,50 @@
 using namespace std;
 
 //Constructor;
-Block::Block(eTetriminoShape shape) {
+Block::Block(eTetriminoShape shape, char side) {
 	this->blockShape = shape;
 	this->rotateRightAmount = 0;
-	buildBlockPoints();
+	this->side = side;
+	buildBlockPoints(side);
 }
 
 //Build the 4 points of the block.
 //Assume that a block is being created only at the middle top of the board.
-void Block::buildBlockPoints() {
+void Block::buildBlockPoints(char side) {
 	int middleX = (GameConfig::GAME_WIDTH + 1) / 2;
-	this->points[0] = Point(middleX, 2, '#');
+	if (side == 'R')
+		middleX += GameConfig::RIVAL_MIN_X;
+
+	this->points[0] = Point(middleX, 0, '#');
 
 	switch (this->blockShape) {
 	case eTetriminoShape::O:
-		genetrate3NonCenterPoints(Point(middleX, 1 , '#'), Point(middleX+1,1,'#'), Point(middleX+1,2,'#'));
+		generate3NonCenterPoints(Point(middleX, 1 , '#'), Point(middleX+1,1,'#'), Point(middleX+1,2,'#'));
 		break;
 	case eTetriminoShape::T:
-		genetrate3NonCenterPoints(Point(middleX, 1 , '#'), Point(middleX - 1, 2, '#'), Point(middleX + 1, 2, '#'));
+		generate3NonCenterPoints(Point(middleX, 1 , '#'), Point(middleX - 1, 2, '#'), Point(middleX + 1, 2, '#'));
 		break;
 	case eTetriminoShape::L:
-		genetrate3NonCenterPoints(Point(middleX -1 , 2, '#'), Point(middleX + 1, 2, '#'), Point(middleX + 1, 1, '#'));
+		generate3NonCenterPoints(Point(middleX -1 , 2, '#'), Point(middleX + 1, 2, '#'), Point(middleX + 1, 1, '#'));
 		break;
 	case eTetriminoShape::J:
-		genetrate3NonCenterPoints(Point(middleX + 1 , 2, '#'), Point(middleX - 1, 2, '#'), Point(middleX - 1, 1, '#'));
+		generate3NonCenterPoints(Point(middleX + 1 , 2, '#'), Point(middleX - 1, 2, '#'), Point(middleX - 1, 1, '#'));
 		break;
 	case eTetriminoShape::S:
-		genetrate3NonCenterPoints(Point(middleX - 1 , 2, '#'), Point(middleX, 1, '#'), Point(middleX + 1, 1, '#'));
+		generate3NonCenterPoints(Point(middleX - 1 , 2, '#'), Point(middleX, 1, '#'), Point(middleX + 1, 1, '#'));
 		break;
 	case eTetriminoShape::Z:
-		genetrate3NonCenterPoints(Point(middleX - 1 , 1, '#'), Point(middleX, 1, '#'), Point(middleX + 1, 2, '#'));
+		generate3NonCenterPoints(Point(middleX - 1 , 1, '#'), Point(middleX, 1, '#'), Point(middleX + 1, 2, '#'));
 		break;
 	case eTetriminoShape::I:
-		genetrate3NonCenterPoints(Point(middleX - 1 , 2, '#'), Point(middleX + 1, 2, '#'), Point(middleX + 2, 2, '#'));
+		generate3NonCenterPoints(Point(middleX - 1 , 0, '#'), Point(middleX + 1, 0, '#'), Point(middleX + 2, 0, '#'));
 		break;
 	}
 }
 
 //Assuming that the points array property of the block first element is the "center" of the block
 //It assign the values of all 3 non "center" points.
-void Block::genetrate3NonCenterPoints(Point p1, Point p2, Point p3) {
+void Block::generate3NonCenterPoints(Point p1, Point p2, Point p3) {
 	this->points[1] = p1;
 	this->points[2] = p2;
 	this->points[3] = p3;
@@ -120,9 +124,13 @@ void Block::freeMatrix(char** matrix) {
 
 //Moves the block to the relevant key.
 //We can assume input is valid cause validated at Board class.
-void Block::moveBlock(GameConfig::eKeys key) {
+void Block::moveBlock(GameConfig::eKeys key, bool isNewBlock) {
 	for (int i = 0; i < 4; i++) {
+		if (!isNewBlock)
+			this->points[i].draw(GameConfig::COLORS[0], ' ');
+
 		this->points[i].move(key);
+		this->points[i].draw(GameConfig::COLORS[0], this->points[i].getSymbol());
 	}
 }
 

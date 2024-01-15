@@ -6,9 +6,16 @@ class Board {
 private:
 	Point board[GameConfig::GAME_WIDTH][GameConfig::GAME_HEIGHT];
 	Block movingBlock;
+
+	void drawTPHBorders();
+	void drawLRVBorders();
+	void drawScore();
 public:
 	bool checkIfBlockCanMove();
 	bool validateBoard();
+	
+	void drawBordersAndScore();
+
 private:
 };
 

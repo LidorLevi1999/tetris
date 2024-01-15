@@ -38,15 +38,15 @@ void Point::draw(int backcolor, char symbol)
 //TODO : decide if validation should be here or on the BOARD class.
 bool Point::setMoveDirection(GameConfig::eKeys key) {
 	switch (key){
-	case GameConfig::eKeys::LEFT:
+	case GameConfig::eKeys::LEFTP1:
 		this->diff_x = this->x == 1 ? 0 : -1;
 		this->diff_y = 0;
 		break;
-	case GameConfig::eKeys::RIGHT:
+	case GameConfig::eKeys::RIGHTP1:
 		this->diff_x = this->x == GameConfig::GAME_WIDTH ? 0 : 1;
 		this->diff_y = 0;
 		break;
-	case GameConfig::eKeys::DOWN:
+	case GameConfig::eKeys::DROP:
 	default:
 		this->diff_x = 0;
 		this->diff_y = this->y == GameConfig::GAME_HEIGHT ? 0 : 1;
@@ -56,14 +56,13 @@ bool Point::setMoveDirection(GameConfig::eKeys key) {
 
 }
 
-
 //Moves the point based on the setMoveDirection response, 
 //Not moving out of bounds of the game width and height
 //TODO : deciede if validation should be here or on the BOARD class.
 void Point::move(GameConfig::eKeys key)
 {
-	if (this->setMoveDirection(key)) {
-		this->draw(GameConfig::COLORS[0], ' ');
+	if (this->setMoveDirection(key)) { // Why bool?, the shape will always move, isn't it?
+		//this->draw(GameConfig::COLORS[0], ' ');
 
 		if (this->x < GameConfig::GAME_WIDTH)
 			this->x += this->diff_x;

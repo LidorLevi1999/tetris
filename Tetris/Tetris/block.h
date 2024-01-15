@@ -9,19 +9,20 @@ public:
 		enum class eTetriminoShape { O, I, T, L, J, S, Z };
 private:
 	Point points[4];
+	char side;
 	int rotateRightAmount;
 	enum class eMoveDirection { ClockWise= 1, CounterClockWise= - 1 };
 
 public:
 	Block() = default;
-	Block(eTetriminoShape shape);
-	void moveBlock(GameConfig::eKeys key);
+	Block(eTetriminoShape shape, char side);
+	void moveBlock(GameConfig::eKeys key, bool isNewBlock=false);
 	void rotateClockwise();
 	void rotateCounterClockwise();
 
 private:
-	void buildBlockPoints();
-	void genetrate3NonCenterPoints(Point p1, Point p2, Point p3);
+	void buildBlockPoints(char side);
+	void generate3NonCenterPoints(Point p1, Point p2, Point p3);
 
 	char** fromBlockToMatrix();
 	void fromMatrixToBlock(char ** matrix);
