@@ -2,19 +2,19 @@
 #define __BOARD_H
 #include "block.h"
 
-class Board {
+class Board 
+{
 private:
-	Point board[GameConfig::GAME_WIDTH][GameConfig::GAME_HEIGHT];
+	char board[GameConfig::BOARD_WIDTH][GameConfig::BOARD_HEIGHT];
+	char side;
 	Block movingBlock;
 
-	void drawTPHBorders();
-	void drawLRVBorders();
-	void drawScore();
 public:
+	Board();
+	void drawBoard(char side);
+	void drawScore(); //
 	bool checkIfBlockCanMove();
 	bool validateBoard();
-	
-	void drawBordersAndScore();
 
 private:
 };

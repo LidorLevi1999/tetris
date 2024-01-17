@@ -4,70 +4,40 @@
 #include <iostream>
 using namespace std;
 
-void Board::drawBordersAndScore()
-{
-	drawTPHBorders();
-	drawLRVBorders();
-	drawScore();
-}
-
-void Board::drawTPHBorders()
-{
-	//Top, bottom and horizontal borders
-	for (int col = GameConfig::MIN_X; col < GameConfig::GAME_WIDTH + GameConfig::MIN_X; col++)
-	{
-		//Left player board top and then bottom border
-		gotoxy(col, GameConfig::MIN_Y - 1);
-		cout << "-";
-		gotoxy(col, GameConfig::GAME_HEIGHT + GameConfig::MIN_Y);
-		cout << "-";
-
-		//Score board horizontal border
-		gotoxy(col + GameConfig::GAME_WIDTH + 4, GameConfig::MIN_Y);
-		cout << "-";
-		if (col == GameConfig::GAME_WIDTH)
-		{
-			gotoxy(col + GameConfig::GAME_WIDTH + 5, GameConfig::MIN_Y);
-			cout << "-";
+Board::Board() {
+	for (int row = 0; row <= GameConfig::BOARD_HEIGHT; row++) {
+		for (int col = 0; col <= GameConfig::BOARD_WIDTH; col++) {
+			if (row == 0 || row == GameConfig::BOARD_HEIGHT)
+				this->board[col][row] = '-';
+			else if (col == 0 || col == GameConfig::BOARD_WIDTH)
+				this->board[col][row] = '|';
+			else
+				this->board[col][row] = ' ';
 		}
-
-		//Right player board top and then bottom border
-		gotoxy(col + GameConfig::RIVAL_MIN_X, GameConfig::MIN_Y - 1);
-		cout << "-";
-		gotoxy(col + GameConfig::RIVAL_MIN_X, GameConfig::GAME_HEIGHT + GameConfig::MIN_Y);
-		cout << "-";
 	}
 }
 
-void Board::drawLRVBorders()
-{
+void Board::drawBoard(char side) {
+	int startX = 0, startY = 0;
+	if (side == 'R')
+		startX = GameConfig::RIVAL_POS;
 
-	//Left, right and vertical borders
-	for (int row = GameConfig::MIN_Y - 1; row <= GameConfig::GAME_HEIGHT + GameConfig::MIN_Y; row++)
-	{
-		//Left player board left and then right border
-		gotoxy(GameConfig::MIN_X - 1, row);
-		cout << "|";
-		gotoxy(GameConfig::GAME_WIDTH + GameConfig::MIN_X, row);
-		cout << "|";
+	gotoxy(startX, startY);
 
-		//Score board vertical border
-		gotoxy(GameConfig::GAME_WIDTH + GameConfig::MIN_X + 10, row);
-		cout << "|";
-
-		//Right player board left and then right border
-		gotoxy(GameConfig::RIVAL_MIN_X + GameConfig::MIN_X - 1, row);
-		cout << "|";
-		gotoxy(GameConfig::RIVAL_MIN_X + GameConfig::GAME_WIDTH + GameConfig::MIN_X, row);
-		cout << "|";
+	for (int row = 0; row <= GameConfig::BOARD_HEIGHT; row++) {
+		for (int col = 0; col <= GameConfig::BOARD_WIDTH; col++) {
+			cout << this->board[col][row];
+		}
+		gotoxy(startX, startY + row + 1);
 	}
+	this->side = side;
 }
 
-void Board::drawScore()
-{
-	//Players score
-	gotoxy(GameConfig::GAME_WIDTH + 7, GameConfig::MIN_Y - 1);
-	cout << "P1";
-	gotoxy(GameConfig::GAME_WIDTH + 14, GameConfig::MIN_Y - 1);
-	cout << "P2";
-}
+//void Board::drawScore()
+//{
+//	//Players score
+//	gotoxy(GameConfig::GAME_WIDTH + 7, GameConfig::MIN_Y - 1);
+//	cout << "P1";
+//	gotoxy(GameConfig::GAME_WIDTH + 14, GameConfig::MIN_Y - 1);
+//	cout << "P2";
+//}

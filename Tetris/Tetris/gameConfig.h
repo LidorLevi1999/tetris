@@ -4,17 +4,24 @@
 class GameConfig
 {
 public:
-	// I'm not sure "DROP" is a needed enum
-	enum class eKeys { LEFTP1 = 'a', RIGHTP1 = 'd', LEFTP2 = 'j', RIGHTP2 = 'l', DROP = 'x', ESC = 27, ROTATE_CLOCKWISE = 's', ROTATE_COUNTERCLOCKWISE = 'w' };
-	static constexpr int GAME_WIDTH = 12;
-	static constexpr int GAME_HEIGHT = 18;
+	enum class eKeys { 
+		LEFTP1 = 'a', RIGHTP1 = 'd', 
+		LEFTP2 = 'j', RIGHTP2 = 'l', 
+		DROPP1 = 'x', DROPP2 = 'm', 
+		ROTATE_CLOCKP1 = 's', ROTATE_CLOCKP2 = 'k',
+		ROTATE_COUNTERP1 = 'w', ROTATE_COUNTERP2 = 'i',
+		ESC = 27
+	};
+
+	static constexpr int BOARD_HEIGHT = 18;
+	static constexpr int BOARD_WIDTH = 12;
 
 	//Left player board
-	static constexpr int MIN_X = 1;
-	static constexpr int MIN_Y = 1;
+	static constexpr int MIN_X = 1; //
+	static constexpr int MIN_Y = 1; //
 
-	//Right player board
-	static constexpr int RIVAL_MIN_X = MIN_X + 32;
+	//Right player board starting position
+	static constexpr int RIVAL_POS = BOARD_WIDTH + 18;
 
 	static const int COLORS[];
 	static const int NUM_OF_COLORS;

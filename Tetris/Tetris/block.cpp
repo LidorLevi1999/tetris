@@ -8,43 +8,44 @@
 using namespace std;
 
 //Constructor;
-Block::Block(eTetriminoShape shape, char side) {
-	this->blockShape = shape;
-	this->rotateRightAmount = 0;
+Block::Block(char side) {
 	this->side = side;
-	buildBlockPoints(side);
+	this->blockShape = getRandomShape();
+	this->rotateRightAmount = 0;
+	this->hasReachedEnd = false;
+	buildBlockPoints();
 }
 
 //Build the 4 points of the block.
 //Assume that a block is being created only at the middle top of the board.
-void Block::buildBlockPoints(char side) {
-	int middleX = (GameConfig::GAME_WIDTH + 1) / 2;
-	if (side == 'R')
-		middleX += GameConfig::RIVAL_MIN_X;
+void Block::buildBlockPoints() {
+	int middleX = (GameConfig::BOARD_WIDTH + 1) / 2;
+	if (this->side == 'R')
+		middleX += GameConfig::RIVAL_POS;
 
 	this->points[0] = Point(middleX, 0, '#');
 
 	switch (this->blockShape) {
 	case eTetriminoShape::O:
-		generate3NonCenterPoints(Point(middleX, 1 , '#'), Point(middleX+1,1,'#'), Point(middleX+1,2,'#'));
+		generate3NonCenterPoints(Point(middleX - 1, 0, '#'), Point(middleX, 1, '#'), Point(middleX - 1, 1, '#'));
 		break;
 	case eTetriminoShape::T:
-		generate3NonCenterPoints(Point(middleX, 1 , '#'), Point(middleX - 1, 2, '#'), Point(middleX + 1, 2, '#'));
+		generate3NonCenterPoints(Point(middleX, 1, '#'), Point(middleX - 1, 1, '#'), Point(middleX + 1, 1, '#'));
 		break;
 	case eTetriminoShape::L:
-		generate3NonCenterPoints(Point(middleX -1 , 2, '#'), Point(middleX + 1, 2, '#'), Point(middleX + 1, 1, '#'));
+		generate3NonCenterPoints(Point(middleX, 1, '#'), Point(middleX + 1, 1, '#'), Point(middleX + 2, 1, '#'));
 		break;
 	case eTetriminoShape::J:
-		generate3NonCenterPoints(Point(middleX + 1 , 2, '#'), Point(middleX - 1, 2, '#'), Point(middleX - 1, 1, '#'));
+		generate3NonCenterPoints(Point(middleX, 1, '#'), Point(middleX - 1, 1, '#'), Point(middleX - 2, 1, '#'));
 		break;
 	case eTetriminoShape::S:
-		generate3NonCenterPoints(Point(middleX - 1 , 2, '#'), Point(middleX, 1, '#'), Point(middleX + 1, 1, '#'));
+		generate3NonCenterPoints(Point(middleX, 1, '#'), Point(middleX + 1, 0, '#'), Point(middleX - 1, 1, '#'));
 		break;
 	case eTetriminoShape::Z:
-		generate3NonCenterPoints(Point(middleX - 1 , 1, '#'), Point(middleX, 1, '#'), Point(middleX + 1, 2, '#'));
+		generate3NonCenterPoints(Point(middleX, 1, '#'), Point(middleX - 1, 0, '#'), Point(middleX + 1, 1, '#'));
 		break;
 	case eTetriminoShape::I:
-		generate3NonCenterPoints(Point(middleX - 1 , 0, '#'), Point(middleX + 1, 0, '#'), Point(middleX + 2, 0, '#'));
+		generate3NonCenterPoints(Point(middleX - 1, 0, '#'), Point(middleX + 1, 0, '#'), Point(middleX + 2, 0, '#'));
 		break;
 	}
 }
@@ -121,16 +122,67 @@ void Block::freeMatrix(char** matrix) {
 	delete matrix;
 }
 
+// This method checks if the block can move in the desired direction
+bool Block::canMove(GameConfig::eKeys key) {
+	int leftBoundary = 0;
+	int rightBoundary = GameConfig::BOARD_WIDTH;
+
+	if (this->side == 'R') {
+		leftBoundary += GameConfig::RIVAL_POS;
+		rightBoundary += GameConfig::RIVAL_POS;
+	}
+
+	for (int i = 0; i < 4; i++) {
+		Point nextPos = this->points[i].setMoveDirectionAndGetNext(key);
+
+		// Check boundaries
+		if (nextPos.getX() < leftBoundary || nextPos.getX() >= rightBoundary)
+			return false;
+		if (nextPos.getY() < 0 || nextPos.getY() >= GameConfig::BOARD_HEIGHT)
+			return false;
+
+		// Check collision with other blocks
+		// TODO
+
+	}
+	return true;
+}
 
 //Moves the block to the relevant key.
 //We can assume input is valid cause validated at Board class.
-void Block::moveBlock(GameConfig::eKeys key, bool isNewBlock) {
-	for (int i = 0; i < 4; i++) {
+bool Block::moveBlock(GameConfig::eKeys key, bool isNewBlock) {
+	if (this->canMove(key)) {
+		// Clear the old position of the point if it's not a new block
 		if (!isNewBlock)
-			this->points[i].draw(GameConfig::COLORS[0], ' ');
+		{
+			for (int i = 0; i < 4; i++)
+				this->points[i].draw(GameConfig::COLORS[0], ' ', this->side);
+		}
+		for (int i = 0; i < 4; i++) {
+			this->points[i].move(key);
+			this->points[i].draw(GameConfig::COLORS[0], '#', this->side);
+		}
+		return true;
+	}
+	else
+		return false;
+}
 
-		this->points[i].move(key);
-		this->points[i].draw(GameConfig::COLORS[0], this->points[i].getSymbol());
+// TODO
+void Block::makeBlockStatic() {
+
+}
+
+Block::eTetriminoShape Block::getRandomShape() {
+	int randomValue = rand() % 7;
+	switch (randomValue) {
+	case 0: return Block::eTetriminoShape::O;
+	case 1: return Block::eTetriminoShape::I;
+	case 2: return Block::eTetriminoShape::T;
+	case 3: return Block::eTetriminoShape::L;
+	case 4: return Block::eTetriminoShape::J;
+	case 5: return Block::eTetriminoShape::S;
+	case 6: return Block::eTetriminoShape::Z;
 	}
 }
 
@@ -148,14 +200,12 @@ void Block::rotateClockwise() {
 	}
 }
 
-
 //Rotates the points at the block counter clockwise.
 void Block::rotateCounterClockwise() {
 	rotateClockwise();
 	rotateClockwise();
 	rotateClockwise();
 }
-
 
 // Function to rotate the matrix 90 degree clockwise
 void Block::rotateMatrixClockwise(char** matrix){
@@ -174,9 +224,18 @@ void Block::rotateMatrixClockwise(char** matrix){
 	}
 }
 
-
 void Block::increaseRotateRightAmount() {
 	this->rotateRightAmount++;
 	if (this->rotateRightAmount == 4)
 		this->rotateRightAmount == 0;
+}
+
+// TO DO
+bool Block::isReachedEnd() {
+	for (int i = 0; i < 4; i++)
+	{
+		gotoxy(this->points[i].getX() + GameConfig::MIN_X - 1, this->points[i].getY() + GameConfig::MIN_Y - 1);
+		
+	}
+	return true;
 }
