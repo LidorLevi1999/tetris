@@ -3,27 +3,24 @@
 #include <windows.h>
 #include <conio.h> 
 #include "block.h"
-#include "board.h"
+//#include "board.h"
+#include "user.h"
 #include <ctime>
 #include <cstdlib>
 
-void Game::startGame() {
-	Board leftBoard, rightBoard;
-	leftBoard.drawBoard('L');
-	rightBoard.drawBoard('R');
 
+void GameManager::startGame() {
 	bool leftBlockMoved = false;
 	bool rightBlockMoved = false;
 
 	srand((time(nullptr)));
 
-	Block leftBlock('L');
-	Block rightBlock('R');
+	//this->LUser.board.updateBoardWithPoints(this->LUser.movingBlock.getBlockPoints());
+	//this->RUser.board.updateBoardWithPoints(this->RUser.movingBlock.getBlockPoints());
+	//this->LUser.movingBlock.moveBlock(GameConfig::eKeys::DROPP1);
+	//this->RUser.movingBlock.moveBlock(GameConfig::eKeys::DROPP2);
 
-	leftBlock.moveBlock(GameConfig::eKeys::DROPP1, true);
-	rightBlock.moveBlock(GameConfig::eKeys::DROPP2, true);
-
-	Sleep(1500);
+	Sleep(1000);
 
 	while (true)
 	{
@@ -32,50 +29,50 @@ void Game::startGame() {
 
 			leftBlockMoved = false;
 			rightBlockMoved = false;
-
 			switch ((GameConfig::eKeys)pressedChar) {
 			//Left cases
 			case GameConfig::eKeys::LEFTP1:
-				leftBlock.moveBlock(GameConfig::eKeys::LEFTP1);
+				this->LUser.moveMovingBlock(GameConfig::eKeys::LEFTP1);
 				break;
 			case GameConfig::eKeys::LEFTP2:
-				rightBlock.moveBlock(GameConfig::eKeys::LEFTP2);
+				this->RUser.moveMovingBlock(GameConfig::eKeys::LEFTP2);
 				break;
 
 			//Right cases
 			case GameConfig::eKeys::RIGHTP1:
-				leftBlock.moveBlock(GameConfig::eKeys::RIGHTP1);
+				this->LUser.moveMovingBlock(GameConfig::eKeys::RIGHTP1);
 				break;
 			case GameConfig::eKeys::RIGHTP2:
-				rightBlock.moveBlock(GameConfig::eKeys::RIGHTP2);
+				this->RUser.moveMovingBlock(GameConfig::eKeys::RIGHTP2);
 				break;
 
 			//Drop cases
 			case GameConfig::eKeys::DROPP1:
-				leftBlockMoved = leftBlock.moveBlock(GameConfig::eKeys::DROPP1);
+				this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
 				break;
 			case GameConfig::eKeys::DROPP2:
-				rightBlockMoved = rightBlock.moveBlock(GameConfig::eKeys::DROPP2);
+				this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
 				break;
 
 			// Rotate Clockwise cases
 			case GameConfig::eKeys::ROTATE_CLOCKP1:
-				leftBlock.rotateClockwise();
+				this->LUser.rotateMovingBlock();
 				break;
 			case GameConfig::eKeys::ROTATE_CLOCKP2:
-				rightBlock.rotateClockwise();
+				this->RUser.rotateMovingBlock();
 				break;
 
 			// Rotate Counter Clockwise cases
 			case GameConfig::eKeys::ROTATE_COUNTERP1:
-				leftBlock.rotateCounterClockwise();
+				this->LUser.rotateMovingBlock(false);
 				break;
 			case GameConfig::eKeys::ROTATE_COUNTERP2:
-				rightBlock.rotateCounterClockwise();
+				this->RUser.rotateMovingBlock(false);
 				break;
 			}
 		}
 
+/*
 		// IT CHECKS TWICE BECAUSE ITS POSSIBLE THAT IN THE WHILE LOOP YOU PRESSED
 		// DROP AND THEN IT NEED TO CHECK IF YOU'RE STUCK OR NOT
 		// TODO -- THINK HOW TO DO IT ONLY ONCE AND NOT TWICE BECAUSE IT'S DUPLICATED
@@ -93,36 +90,40 @@ void Game::startGame() {
 			// TODO - Random Shape Generator
 			// rightBlock = newBlockGenerator('R');
 		}
-
-		leftBlockMoved = leftBlock.moveBlock(GameConfig::eKeys::DROPP1);
-		rightBlockMoved = rightBlock.moveBlock(GameConfig::eKeys::DROPP2);
+*/
+		leftBlockMoved = this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
+		rightBlockMoved = this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
 
 		// Checks if a block couldn't move, make it static and create new block
 		if (!leftBlockMoved) {
+			if (this->LUser.getMovingBlock().getMovedAmount() == 0)
+				return;
+			this->LUser.updateBoardAndAssignGenerateNewBlock();
 			// TODO - Make Block Static
 			// leftBlock.makeBlockStatic();
 			// TODO - Random Shape Generator
 			// leftBlock = newBlockGenerator('L');
 		}
 		if (!rightBlockMoved) {
+			this->RUser.updateBoardAndAssignGenerateNewBlock();
 			// TODO - Make Block Static
 			// rightBlock.makeBlockStatic();
 			// TODO - Random Shape Generator
 			// rightBlock = newBlockGenerator('R');
 		}
 
-		Sleep(500);
+		Sleep(1000);
 	}
 }
 
-void Game::showMenu() {
+void GameManager::showMenu() {
 
 }
 
-void Game::gamePaused() {
+void GameManager::gamePaused() {
 
 }
 
-void Game::gameResumed() {
+void GameManager::gameResumed() {
 
 }

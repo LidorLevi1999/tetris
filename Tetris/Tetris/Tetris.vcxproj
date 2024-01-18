@@ -189,6 +189,7 @@
     <ClCompile Include="general.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="point.cpp" />
+    <ClCompile Include="user.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="block.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="gameConfig.h" />
     <ClInclude Include="general.h" />
     <ClInclude Include="point.h" />
+    <ClInclude Include="user.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

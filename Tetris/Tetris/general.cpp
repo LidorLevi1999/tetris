@@ -4,6 +4,7 @@
 #include <iostream>
 using namespace std;
 
+
 void gotoxy(int x, int y)
 {
 	HANDLE hConsoleOutput;
@@ -15,10 +16,12 @@ void gotoxy(int x, int y)
 	SetConsoleCursorPosition(hConsoleOutput, dwCursorPosition);
 }
 
+
 void clearScreen()
 {
 	system("cls");
 }
+
 
 char** buildCharMatrix(int rowsAndCols) {
 	char** matrix = new char* [rowsAndCols];

@@ -1,14 +1,14 @@
 #ifndef __GAME_H
 #define __GAME_H
 
-#include "board.h"
-
-class Game 
+#include "user.h"
+class GameManager 
 {
-	Board leftBoard;
-	Board rightBoard;
+	User LUser;
+	User RUser;
 	
 public:
+	GameManager() : LUser('L'), RUser('R') {};
 	void startGame();
 	void showMenu();
 	void gamePaused();

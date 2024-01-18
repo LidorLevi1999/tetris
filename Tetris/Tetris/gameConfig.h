@@ -21,7 +21,7 @@ public:
 	static constexpr int MIN_Y = 1; //
 
 	//Right player board starting position
-	static constexpr int RIVAL_POS = BOARD_WIDTH + 18;
+	static constexpr int RIVAL_POS = BOARD_WIDTH + 18 + 3;
 
 	static const int COLORS[];
 	static const int NUM_OF_COLORS;

@@ -7,16 +7,17 @@ class Board
 private:
 	char board[GameConfig::BOARD_WIDTH][GameConfig::BOARD_HEIGHT];
 	char side;
-	Block movingBlock;
 
 public:
 	Board();
 	void drawBoard(char side);
-	void drawScore(); //
-	bool checkIfBlockCanMove();
-	bool validateBoard();
-
+	//void drawScore(); 
+	void validateBoard();
+	const char(*getBoard())[GameConfig::BOARD_HEIGHT] { return this->board; };
+	void updateBoardWithPoints(Point* points);
 private:
+	bool isAllRowFull(int row) const;
+	void bombRowAndFixBoard(int row);
 };
 
 
