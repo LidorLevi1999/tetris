@@ -72,7 +72,6 @@ void Board::validateBoard() {
 	}
 }
 
-
 bool Board::isAllRowFull(int row) const {
 	for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
 		if (this->board[col][row] == ' ')

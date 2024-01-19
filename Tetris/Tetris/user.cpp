@@ -7,6 +7,7 @@ User::User(char side) {
 	this->board = Board();
 	this->movingBlock = Block(this->side);
 	this->board.drawBoard(this->side);
+	this->movingBlock.drawBlock();
 	this->score = 0;
 };
 
@@ -42,8 +43,15 @@ bool User::rotateMovingBlock(bool clockWise) {
 		copyBlock.rotateClockwise();
 	else copyBlock.rotateCounterClockwise();
 	Point* points = copyBlock.getBlockPoints();
+	char pointSymbol;
+	int xToCheck, yToCheck;
 	for (int i = 0; i < 4; i++) {
-		if (this->board.getBoard()[(points[i].getX() - xOffset)][(points[i].getY())] != ' ')
+		xToCheck = points[i].getX() - xOffset;
+		yToCheck = points[i].getY() - 1;
+		if (xToCheck < 0 || xToCheck > GameConfig::BOARD_WIDTH) return false;
+		if (yToCheck < 0 || yToCheck > GameConfig::BOARD_HEIGHT) return false;
+		pointSymbol = this->board.getBoard()[(xToCheck)][(yToCheck)];
+		if (pointSymbol != ' ')
 			return false;
 	}
 	this->movingBlock.copyBlock(copyBlock);
