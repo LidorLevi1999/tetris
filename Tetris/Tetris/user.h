@@ -16,6 +16,8 @@ public:
 	bool moveMovingBlock(GameConfig::eKeys direction);
 	void updateBoardAndAssignGenerateNewBlock();
 	bool rotateMovingBlock(bool clockWise = true);
+	void createNewMovingBlock();
+	void resetBoard();
 public:
 private:
 

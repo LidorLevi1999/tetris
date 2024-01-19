@@ -6,16 +6,14 @@ class GameManager
 {
 	User LUser;
 	User RUser;
-	
+	bool isGameRunning;
 public:
-	GameManager() : LUser('L'), RUser('R') {};
+	GameManager() : LUser('L'), RUser('R') { this->isGameRunning = false; };
 	void startGame();
 	int showMenu();
-	void gamePause();
-	void gameResume();
 	void showInstructions();
-	void gameRestart();
-	void gameEnd();
+	void playGame();
+	void drawBoards();
 };
 
 #endif

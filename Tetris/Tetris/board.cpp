@@ -4,14 +4,18 @@
 #include <iostream>
 using namespace std;
 
-Board::Board() {
+Board::Board(char side) {
+	clearBoard();
+	this->side = side;
+}
+
+void Board::clearBoard() {
 	for (int row = 0; row <= GameConfig::BOARD_HEIGHT; row++) {
 		for (int col = 0; col <= GameConfig::BOARD_WIDTH; col++) {
-				this->board[col][row] = ' ';
+			this->board[col][row] = ' ';
 		}
 	}
 }
-
 
 void Board::drawBoard(char side) {
 	int startX = 0, startY = 0;
@@ -56,8 +60,11 @@ void Board::drawBoard(char side) {
 
 void Board::updateBoardWithPoints(Point* points) {
 	int xOffset = this->side == 'L' ? 1 : GameConfig::RIVAL_POS;
+	int row, col;
 	for (int i = 0; i < 4; i++) {
-		this->board[points[i].getX() - xOffset][points[i].getY() - 1] = points[i].getSymbol();
+		row = points[i].getX() - xOffset;
+		col = points[i].getY() - 1;
+		this->board[row][col] = points[i].getSymbol();
 	}
 }
 

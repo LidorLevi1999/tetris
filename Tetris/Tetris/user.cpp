@@ -2,14 +2,15 @@
 #include "gameConfig.h"
 
 
-User::User(char side) {
+User::User(char side) : board(Board(side)){
 	this->side = side;
-	this->board = Board();
-	this->movingBlock = Block(this->side);
-	this->board.drawBoard(this->side);
-	this->movingBlock.drawBlock();
+	createNewMovingBlock();
 	this->score = 0;
 };
+
+void User::resetBoard() {
+	this->board = Board(this->side);
+}
 
 
 bool User::moveMovingBlock(GameConfig::eKeys direction) {
@@ -63,5 +64,10 @@ bool User::rotateMovingBlock(bool clockWise) {
 void User::updateBoardAndAssignGenerateNewBlock() {
 	this->board.updateBoardWithPoints(this->movingBlock.getBlockPoints());
 	this->board.validateBoard();
+	createNewMovingBlock();
+}
+
+
+void User::createNewMovingBlock() {
 	this->movingBlock = Block(this->side);
 }

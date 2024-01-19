@@ -9,12 +9,13 @@ private:
 	char side;
 
 public:
-	Board();
+	Board(char side);
 	void drawBoard(char side);
 	//void drawScore(); 
 	void validateBoard();
 	const char(*getBoard())[GameConfig::BOARD_HEIGHT] { return this->board; };
 	void updateBoardWithPoints(Point* points);
+	void clearBoard();
 private:
 	bool isAllRowFull(int row) const;
 	void bombRowAndFixBoard(int row);

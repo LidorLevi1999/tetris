@@ -7,106 +7,41 @@
 #include "user.h"
 #include <ctime>
 #include <cstdlib>
-
+#include "general.h"
 using namespace std;
 
 void GameManager::startGame() {
-	bool leftBlockMoved = false;
-	bool rightBlockMoved = false;
-
-	srand((time(nullptr)));
-
-	//this->LUser.board.updateBoardWithPoints(this->LUser.movingBlock.getBlockPoints());
-	//this->RUser.board.updateBoardWithPoints(this->RUser.movingBlock.getBlockPoints());
-	//this->LUser.movingBlock.moveBlock(GameConfig::eKeys::DROPP1);
-	//this->RUser.movingBlock.moveBlock(GameConfig::eKeys::DROPP2);
-
-	Sleep(1000);
-
-	while (true)
-	{
-		if (_kbhit()) {
-			char pressedChar = _getch();
-
-			leftBlockMoved = false;
-			rightBlockMoved = false;
-			switch ((GameConfig::eKeys)pressedChar) {
-			//Left cases
-			case GameConfig::eKeys::LEFTP1:
-				this->LUser.moveMovingBlock(GameConfig::eKeys::LEFTP1);
-				break;
-			case GameConfig::eKeys::LEFTP2:
-				this->RUser.moveMovingBlock(GameConfig::eKeys::LEFTP2);
-				break;
-
-			//Right cases
-			case GameConfig::eKeys::RIGHTP1:
-				this->LUser.moveMovingBlock(GameConfig::eKeys::RIGHTP1);
-				break;
-			case GameConfig::eKeys::RIGHTP2:
-				this->RUser.moveMovingBlock(GameConfig::eKeys::RIGHTP2);
-				break;
-
-			//Drop cases
-			case GameConfig::eKeys::DROPP1:
-				this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
-				break;
-			case GameConfig::eKeys::DROPP2:
-				this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
-				break;
-
-			// Rotate Clockwise cases
-			case GameConfig::eKeys::ROTATE_CLOCKP1:
-				this->LUser.rotateMovingBlock();
-				break;
-			case GameConfig::eKeys::ROTATE_CLOCKP2:
-				this->RUser.rotateMovingBlock();
-				break;
-
-			// Rotate Counter Clockwise cases
-			case GameConfig::eKeys::ROTATE_COUNTERP1:
-				this->LUser.rotateMovingBlock(false);
-				break;
-			case GameConfig::eKeys::ROTATE_COUNTERP2:
-				this->RUser.rotateMovingBlock(false);
-				break;
-
-			// User paused
-			case GameConfig::eKeys::ESC:
-				gamePause();
-			}
+	int menuSelection = 0;
+	while (menuSelection != 9) {
+		menuSelection = showMenu();
+		switch (menuSelection) {
+		case 1:
+			system("cls");
+			this->isGameRunning = true;
+			this->LUser.resetBoard();
+			this->LUser.createNewMovingBlock();
+			this->RUser.resetBoard();
+			this->RUser.createNewMovingBlock();
+			playGame();
+			break;
+		case 2:
+			system("cls");
+			playGame();
+			break;
+		case 9:
+			return;
 		}
 
-		leftBlockMoved = this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
-		rightBlockMoved = this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
-
-		// Checks if a block couldn't move, make it static and create new block
-		if (!leftBlockMoved && !rightBlockMoved) {
-			if (this->LUser.getMovingBlock().getMovedAmount() == 0 || this->RUser.getMovingBlock().getMovedAmount() == 0)
-				return;
-			//TIE
-		}
-		if (!leftBlockMoved) {
-			if (this->LUser.getMovingBlock().getMovedAmount() == 0)
-				return;
-			this->LUser.updateBoardAndAssignGenerateNewBlock();
-		}
-		if (!rightBlockMoved) {
-			if (this->RUser.getMovingBlock().getMovedAmount() == 0)
-				return;
-			this->RUser.updateBoardAndAssignGenerateNewBlock();
-		}
-
-		Sleep(800);
 	}
 }
 
 int GameManager::showMenu() {
 	while (true) {
 		system("cls");
-		cout << "The game has been paused, make your choice using the keyboard:" << endl;
+		cout << "Please select one of the following options in order to continue:" << endl;
 		cout << "(1) Start a new game" << endl;
-		cout << "(2) Continue a paused game" << endl;
+		if (this->isGameRunning)
+			cout << "(2) Continue a paused game" << endl;
 		cout << "(8) Present instructions and keys" << endl;
 		cout << "(9) EXIT" << endl;
 
@@ -117,43 +52,137 @@ int GameManager::showMenu() {
 			system("cls");
 			cout << "A new game will be started in 3 seconds.." << endl;
 			Sleep(3000);
-			return 2;
-		case '2':
-			system("cls");
-			cout << "The game will be resumed in 3 seconds.." << endl;
-			Sleep(3000);
 			return 1;
+		case '2':
+			if (this->isGameRunning) {
+				system("cls");
+				cout << "The game will be resumed in 3 seconds.." << endl;
+				Sleep(3000);
+				return 2;
+			}
+			else {
+				cout << "Invalid selection. Please try again." << endl;
+				Sleep(400);
+				break;
+			}
 		case '8':
 			system("cls");
 			showInstructions();
-			Sleep(3000);
+			Sleep(750);
 			break;
 		case '9':
 			system("cls");
 			cout << "The game will exit in 3 seconds.." << endl;
 			Sleep(3000);
-			break;
+			return 9;
 		default:
 			cout << "Invalid selection. Please try again." << endl;
-			Sleep(1000);
+			Sleep(400);
 			break;
 		}
 	}
 }
 
-void GameManager::gamePause() {
-	switch (showMenu()) {
-	case 1:
-		gameResume();
-		return;
-	case 2:
-		gameRestart();
-		return;
-	case 3:
-		gameEnd();
-		return;
+
+void GameManager::playGame() {
+	drawBoards();
+	bool leftBlockMoved = false;
+	bool rightBlockMoved = false;
+
+	srand((time(nullptr)));
+	Sleep(1000);
+
+	while (this->isGameRunning)
+	{
+		if (_kbhit()) {
+			char pressedChar = _getch();
+
+			leftBlockMoved = false;
+			rightBlockMoved = false;
+			switch ((GameConfig::eKeys)pressedChar) {
+				//Left cases
+			case GameConfig::eKeys::LEFTP1:
+				this->LUser.moveMovingBlock(GameConfig::eKeys::LEFTP1);
+				break;
+			case GameConfig::eKeys::LEFTP2:
+				this->RUser.moveMovingBlock(GameConfig::eKeys::LEFTP2);
+				break;
+				//Right cases
+			case GameConfig::eKeys::RIGHTP1:
+				this->LUser.moveMovingBlock(GameConfig::eKeys::RIGHTP1);
+				break;
+			case GameConfig::eKeys::RIGHTP2:
+				this->RUser.moveMovingBlock(GameConfig::eKeys::RIGHTP2);
+				break;
+
+				//Drop cases
+			case GameConfig::eKeys::DROPP1:
+				this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
+				break;
+			case GameConfig::eKeys::DROPP2:
+				this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
+				break;
+
+				// Rotate Clockwise cases
+			case GameConfig::eKeys::ROTATE_CLOCKP1:
+				this->LUser.rotateMovingBlock();
+				break;
+			case GameConfig::eKeys::ROTATE_CLOCKP2:
+				this->RUser.rotateMovingBlock();
+				break;
+
+				// Rotate Counter Clockwise cases
+			case GameConfig::eKeys::ROTATE_COUNTERP1:
+				this->LUser.rotateMovingBlock(false);
+				break;
+			case GameConfig::eKeys::ROTATE_COUNTERP2:
+				this->RUser.rotateMovingBlock(false);
+				break;
+
+				// User paused
+			case GameConfig::eKeys::ESC:
+				return;
+			}
+		}
+
+		leftBlockMoved = this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
+		rightBlockMoved = this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
+
+		// Checks if a block couldn't move, make it static and create new block
+		if (!leftBlockMoved && !rightBlockMoved) {
+			if (this->LUser.getMovingBlock().getMovedAmount() == 0 || this->RUser.getMovingBlock().getMovedAmount() == 0) {
+				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+				cout << "This is a TIE !!";
+				this->isGameRunning = false;
+				Sleep(3000);
+				return;
+			}
+		}
+		if (!leftBlockMoved) {
+			if (this->LUser.getMovingBlock().getMovedAmount() == 0) {
+				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+				cout << "Left Player Won !";
+				this->isGameRunning = false;
+				Sleep(3000);
+				return;
+			}
+			this->LUser.updateBoardAndAssignGenerateNewBlock();
+		}
+		if (!rightBlockMoved) {
+			if (this->RUser.getMovingBlock().getMovedAmount() == 0) {
+				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+				cout << "Right Player Won !";
+				this->isGameRunning = false;
+				Sleep(3000);
+				return;
+			}
+			this->RUser.updateBoardAndAssignGenerateNewBlock();
+		}
+
+		Sleep(800);
 	}
 }
+
 
 void GameManager::showInstructions() {
 	// Brief explanation of Tetris
@@ -194,14 +223,10 @@ void GameManager::showInstructions() {
 	}
 }
 
-void GameManager::gameResume() {
-	// Print the board, the main loop will keep running
-}
 
-void GameManager::gameRestart() {
-	// Free everything, create new boards, reset scores, the main loop will keep running
-}
-
-void GameManager::gameEnd() {
-	// Free everything, and then exit(0)
+void GameManager::drawBoards() {
+	this->LUser.getBoard().drawBoard('L');
+	this->RUser.getBoard().drawBoard('R');
+	this->LUser.getMovingBlock().drawBlock();
+	this->RUser.getMovingBlock().drawBlock();
 }
