@@ -10,9 +10,12 @@ class GameManager
 public:
 	GameManager() : LUser('L'), RUser('R') {};
 	void startGame();
-	void showMenu();
-	void gamePaused();
-	void gameResumed();
+	int showMenu();
+	void gamePause();
+	void gameResume();
+	void showInstructions();
+	void gameRestart();
+	void gameEnd();
 };
 
 #endif
