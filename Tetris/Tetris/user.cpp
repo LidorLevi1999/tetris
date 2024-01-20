@@ -51,7 +51,7 @@ bool User::rotateMovingBlock(bool clockWise) {
 		xToCheck = points[i].getX() - xOffset;
 		yToCheck = points[i].getY() - 1;
 		if (xToCheck < 0 || xToCheck > GameConfig::BOARD_WIDTH - 1) return false;
-		if (yToCheck < 0 || yToCheck > GameConfig::BOARD_HEIGHT) return false;
+		if (yToCheck < 0 || yToCheck >= GameConfig::BOARD_HEIGHT) return false;
 		pointSymbol = this->board.getBoard()[(xToCheck)][(yToCheck)].getSymbol();
 		if (pointSymbol != ' ')
 			return false;

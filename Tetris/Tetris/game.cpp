@@ -180,20 +180,49 @@ void GameManager::playGame() {
 		// Checks if a block couldn't move, make it static and create new block, checks for winnings
 		if (!leftBlockMoved && !rightBlockMoved) {
 			// I think if both of them are stuck, the game is over and this if is irrelevant
-			if (this->LUser.getMovingBlock().getMovedAmount() == 0 || this->RUser.getMovingBlock().getMovedAmount() == 0)
-				declareWinner();
+			if (this->LUser.getMovingBlock().getMovedAmount() == 0 || this->RUser.getMovingBlock().getMovedAmount() == 0) {
+				updateScoreTable();
+				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+				if (this->LUser.getScore() > this->RUser.getScore())
+					cout << "Left player Won due to Higher score !!";
+				else if (this->RUser.getScore() > this->LUser.getScore())
+					cout << "Right player Won due to Higher score !!";
+				else
+					cout << "This is a TIE !!";
+				this->isGameRunning = false;
+				Sleep(3000);
+				return;
+			}
 		}
 		if (!leftBlockMoved) {
-			if (this->LUser.getMovingBlock().getMovedAmount() == 0)
-				declareWinner();
-
+			if (this->LUser.getMovingBlock().getMovedAmount() == 0) {
+				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+				cout << "Right Player Won !" << endl << endl;
+				cout << "Press any key to return to main menu" << endl;
+				while (true) {
+					if (_kbhit())
+						break;
+					Sleep(10);
+				}
+				this->isGameRunning = false;
+				return;
+			}
 			this->LUser.updateBoardAndGenerateNewBlock();
 			updateScoreTable();
 		}
 		if (!rightBlockMoved) {
-			if (this->RUser.getMovingBlock().getMovedAmount() == 0)
-				declareWinner();
-
+			if (this->RUser.getMovingBlock().getMovedAmount() == 0) {
+				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+				cout << "Left Player Won !" << endl << endl;
+				cout << "Press any key to return to main menu" << endl;
+				while (true) {
+					if (_kbhit())
+						break;
+					Sleep(10);
+				}
+				this->isGameRunning = false;
+				return;
+			}
 			this->RUser.updateBoardAndGenerateNewBlock();
 			updateScoreTable();
 		}
