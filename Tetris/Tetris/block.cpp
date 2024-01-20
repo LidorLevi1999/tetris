@@ -129,7 +129,6 @@ bool Block::moveBlock(GameConfig::eKeys key, bool shouldDraw) {
 }
 
 Block::eTetriminoShape Block::getRandomShape() {
-	return Block::eTetriminoShape::I;
 
 	int randomValue = rand() % 7;
 	switch (randomValue) {
