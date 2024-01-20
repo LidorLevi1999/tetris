@@ -122,40 +122,50 @@ void GameManager::playGame() {
 			switch ((GameConfig::eKeys)pressedChar) {
 				//Left cases
 			case GameConfig::eKeys::LEFTP1:
+			case GameConfig::eKeys::LEFTP1C:
 				this->LUser.moveMovingBlock(GameConfig::eKeys::LEFTP1);
 				break;
 			case GameConfig::eKeys::LEFTP2:
+			case GameConfig::eKeys::LEFTP2C:
 				this->RUser.moveMovingBlock(GameConfig::eKeys::LEFTP2);
 				break;
 				//Right cases
 			case GameConfig::eKeys::RIGHTP1:
+			case GameConfig::eKeys::RIGHTP1C:
 				this->LUser.moveMovingBlock(GameConfig::eKeys::RIGHTP1);
 				break;
 			case GameConfig::eKeys::RIGHTP2:
+			case GameConfig::eKeys::RIGHTP2C:
 				this->RUser.moveMovingBlock(GameConfig::eKeys::RIGHTP2);
 				break;
 
 				//Drop cases
 			case GameConfig::eKeys::DROPP1:
+			case GameConfig::eKeys::DROPP1C:
 				this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
 				break;
 			case GameConfig::eKeys::DROPP2:
+			case GameConfig::eKeys::DROPP2C:
 				this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
 				break;
 
 				// Rotate Clockwise cases
 			case GameConfig::eKeys::ROTATE_CLOCKP1:
+			case GameConfig::eKeys::ROTATE_CLOCKP1C:
 				this->LUser.rotateMovingBlock();
 				break;
 			case GameConfig::eKeys::ROTATE_CLOCKP2:
+			case GameConfig::eKeys::ROTATE_CLOCKP2C:
 				this->RUser.rotateMovingBlock();
 				break;
 
 				// Rotate Counter Clockwise cases
 			case GameConfig::eKeys::ROTATE_COUNTERP1:
+			case GameConfig::eKeys::ROTATE_COUNTERP1C:
 				this->LUser.rotateMovingBlock(false);
 				break;
 			case GameConfig::eKeys::ROTATE_COUNTERP2:
+			case GameConfig::eKeys::ROTATE_COUNTERP2C:
 				this->RUser.rotateMovingBlock(false);
 				break;
 
