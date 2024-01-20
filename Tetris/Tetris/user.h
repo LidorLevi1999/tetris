@@ -18,6 +18,8 @@ public:
 	bool rotateMovingBlock(bool clockWise = true);
 	void createNewMovingBlock();
 	void resetBoard();
+	void increaseScore(int scoreRecieved) { this->score += scoreRecieved; };
+	void resetScore() { this->score = 0; };
 public:
 private:
 

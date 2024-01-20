@@ -11,8 +11,7 @@ private:
 public:
 	Board(char side);
 	void drawBoard(char side);
-	//void drawScore(); 
-	void validateBoard();
+	int validateBoard();
 	const char(*getBoard())[GameConfig::BOARD_HEIGHT] { return this->board; };
 	void updateBoardWithPoints(Point* points);
 	void clearBoard();

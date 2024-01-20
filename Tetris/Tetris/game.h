@@ -14,6 +14,8 @@ public:
 	void showInstructions();
 	void playGame();
 	void drawBoards();
+	void drawScore(); 
+	void updateScoreTable();
 };
 
 #endif

@@ -22,6 +22,7 @@ void GameManager::startGame() {
 			this->LUser.createNewMovingBlock();
 			this->RUser.resetBoard();
 			this->RUser.createNewMovingBlock();
+			this->LUser.resetScore();
 			playGame();
 			break;
 		case 2:
@@ -151,8 +152,14 @@ void GameManager::playGame() {
 		// Checks if a block couldn't move, make it static and create new block
 		if (!leftBlockMoved && !rightBlockMoved) {
 			if (this->LUser.getMovingBlock().getMovedAmount() == 0 || this->RUser.getMovingBlock().getMovedAmount() == 0) {
+				updateScoreTable();
 				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-				cout << "This is a TIE !!";
+				if(this->LUser.getScore() > this->RUser.getScore())
+					cout << "Left player Won due to Higher score !!";
+				else if(this->RUser.getScore() > this->LUser.getScore())
+					cout << "Right player Won due to Higher score !!";
+				else
+					cout << "This is a TIE !!";
 				this->isGameRunning = false;
 				Sleep(3000);
 				return;
@@ -161,24 +168,25 @@ void GameManager::playGame() {
 		if (!leftBlockMoved) {
 			if (this->LUser.getMovingBlock().getMovedAmount() == 0) {
 				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-				cout << "Left Player Won !";
-				this->isGameRunning = false;
-				Sleep(3000);
-				return;
-			}
-			this->LUser.updateBoardAndAssignGenerateNewBlock();
-		}
-		if (!rightBlockMoved) {
-			if (this->RUser.getMovingBlock().getMovedAmount() == 0) {
-				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
 				cout << "Right Player Won !";
 				this->isGameRunning = false;
 				Sleep(3000);
 				return;
 			}
-			this->RUser.updateBoardAndAssignGenerateNewBlock();
+			this->LUser.updateBoardAndAssignGenerateNewBlock();
+			updateScoreTable();
 		}
-
+		if (!rightBlockMoved) {
+			if (this->RUser.getMovingBlock().getMovedAmount() == 0) {
+				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+				cout << "Left Player Won !";
+				this->isGameRunning = false;
+				Sleep(3000);
+				return;
+			}
+			this->RUser.updateBoardAndAssignGenerateNewBlock();
+			updateScoreTable();
+		}
 		Sleep(800);
 	}
 }
@@ -229,4 +237,26 @@ void GameManager::drawBoards() {
 	this->RUser.getBoard().drawBoard('R');
 	this->LUser.getMovingBlock().drawBlock();
 	this->RUser.getMovingBlock().drawBlock();
+	drawScore();
+}
+
+void GameManager::drawScore()
+{
+	//Players score
+	gotoxy(GameConfig::BOARD_WIDTH + 5, GameConfig::MIN_Y - 1);
+	cout << "P1";
+	gotoxy(GameConfig::BOARD_WIDTH + 5, GameConfig::MIN_Y);
+	cout << "Score:";
+	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y - 1);
+	cout << "P2";
+	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y);
+	cout << "Score:";
+	updateScoreTable();
+}
+
+void GameManager::updateScoreTable() {
+	gotoxy(GameConfig::BOARD_WIDTH + 5, GameConfig::MIN_Y + 1);
+	cout << this->LUser.getScore();
+	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y + 1);
+	cout << this->RUser.getScore();
 }

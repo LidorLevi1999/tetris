@@ -48,14 +48,6 @@ void Board::drawBoard(char side) {
 }
 
 
-//void Board::drawScore()
-//{
-//	//Players score
-//	gotoxy(GameConfig::GAME_WIDTH + 7, GameConfig::MIN_Y - 1);
-//	cout << "P1";
-//	gotoxy(GameConfig::GAME_WIDTH + 14, GameConfig::MIN_Y - 1);
-//	cout << "P2";
-//}
 
 
 void Board::updateBoardWithPoints(Point* points) {
@@ -69,14 +61,19 @@ void Board::updateBoardWithPoints(Point* points) {
 }
 
 
-void Board::validateBoard() {
+int Board::validateBoard() {
+	int scoreRecieved = 0;
+	int multiplier = 1;
 	for (int i = GameConfig::BOARD_HEIGHT - 1; i >= 0; i--) {
 		if (isAllRowFull(i)) {
 			bombRowAndFixBoard(i);
 			drawBoard(this->side);
 			i++;
+			scoreRecieved += (5 * multiplier);
+			multiplier *= 2;
 		}
 	}
+	return scoreRecieved;
 }
 
 bool Board::isAllRowFull(int row) const {
