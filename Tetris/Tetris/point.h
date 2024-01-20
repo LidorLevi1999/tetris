@@ -8,13 +8,13 @@ class Point
 	int x;
 	int y;
 	char symbol;
-	//Color color;
 	int diff_x;
 	int diff_y;
+	int color;
 
 public:
 	Point() = default;
-	Point(int x, int y, char symbol);
+	Point(int x, int y, char symbol, int color);
 	void draw(int backcolor);
 	void draw(int backcolor, char symbol);
 	void move(GameConfig::eKeys key, bool shouldDraw = true);

@@ -4,10 +4,10 @@
 class GameConfig
 {
 public:
-	enum class eKeys { 
-		LEFTP1 = 'a', RIGHTP1 = 'd', 
-		LEFTP2 = 'j', RIGHTP2 = 'l', 
-		DROPP1 = 'x', DROPP2 = 'm', 
+	enum class eKeys {
+		LEFTP1 = 'a', RIGHTP1 = 'd',
+		LEFTP2 = 'j', RIGHTP2 = 'l',
+		DROPP1 = 'x', DROPP2 = 'm',
 		ROTATE_CLOCKP1 = 's', ROTATE_CLOCKP2 = 'k',
 		ROTATE_COUNTERP1 = 'w', ROTATE_COUNTERP2 = 'i',
 		ESC = 27
@@ -24,6 +24,8 @@ public:
 	static constexpr int RIVAL_POS = BOARD_WIDTH + 18 + 3;
 
 	static const int COLORS[];
-	static const int NUM_OF_COLORS;
+	static int NUM_OF_COLORS;  
+
+	static void setColorSupport(bool isColorSupported);
 };
 #endif

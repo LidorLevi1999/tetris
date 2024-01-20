@@ -5,8 +5,7 @@
 using namespace std;
 
 
-void gotoxy(int x, int y)
-{
+void gotoxy(int x, int y){
 	HANDLE hConsoleOutput;
 	COORD dwCursorPosition;
 	cout.flush();
@@ -17,8 +16,7 @@ void gotoxy(int x, int y)
 }
 
 
-void clearScreen()
-{
+void clearScreen(){
 	system("cls");
 }
 

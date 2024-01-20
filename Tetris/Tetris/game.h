@@ -7,8 +7,9 @@ class GameManager
 	User LUser;
 	User RUser;
 	bool isGameRunning;
+	bool isGameSupportColors;
 public:
-	GameManager() : LUser('L'), RUser('R') { this->isGameRunning = false; };
+	GameManager() : LUser('L'), RUser('R') { this->isGameRunning = false;  this->isGameSupportColors = false; };
 	void startGame();
 	int showMenu();
 	void showInstructions();

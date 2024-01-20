@@ -7,18 +7,18 @@ using namespace std;
 
 
 //Constructor;
-Point::Point(int x, int y, char symbol)
-{
+Point::Point(int x, int y, char symbol, int color) {
 	this->x = x;
 	this->y = y;
 	this->symbol = symbol;
+	this->color = color;
 	diff_x = 0;
 	diff_y = 1;
+
 }
 
 
-void Point::setCoordinates(int x, int y, bool shouldDraw)
-{
+void Point::setCoordinates(int x, int y, bool shouldDraw) {
 	if(shouldDraw)
 		draw(GameConfig::COLORS[0], ' ');
 	this->x = x;
@@ -32,20 +32,22 @@ void Point::setCoordinates(int x, int y, bool shouldDraw)
 
 
 //Draw the point with the symbol assigned at the constructor;
-void Point::draw(int backcolor)
-{
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), backcolor);
-	gotoxy(x + GameConfig::MIN_X - 1, y + GameConfig::MIN_Y - 1);
+void Point::draw(int backcolor) {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
+	gotoxy(this->x + GameConfig::MIN_X - 1, this->y + GameConfig::MIN_Y - 1);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), this->color);
 	cout << this->symbol;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
 }
 
 
 //Draw the point with the symbol given, mainly used for whitespaces;
 void Point::draw(int backcolor, char symbol)
 {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), backcolor);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
 	gotoxy(this->x + GameConfig::MIN_X - 1, this->y + GameConfig::MIN_Y - 1);
 	cout << symbol;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
 }
 
 
@@ -70,7 +72,7 @@ Point Point::setMoveDirectionAndGetNext(GameConfig::eKeys key) {
 		break;
 	}
 	// Return the next position
-	return Point{ this->x + diff_x, this->y + diff_y, this->symbol };
+	return Point{ this->x + diff_x, this->y + diff_y, this->symbol, this->color };
 	//return (this->diff_x != 0 || this->diff_y != 0);
 }
 

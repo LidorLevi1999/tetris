@@ -13,6 +13,7 @@ private:
 	int rotateRightAmount;
 	int movedAmount;
 	eTetriminoShape blockShape;
+	int blockColor;
 
 public:
 	Block() = default;

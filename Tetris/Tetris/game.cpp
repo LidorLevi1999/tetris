@@ -8,6 +8,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "general.h"
+#include "gameConfig.h"
 using namespace std;
 
 void GameManager::startGame() {
@@ -16,8 +17,9 @@ void GameManager::startGame() {
 		menuSelection = showMenu();
 		switch (menuSelection) {
 		case 1:
-			system("cls");
+			clearScreen();
 			this->isGameRunning = true;
+			GameConfig::setColorSupport(false); 
 			this->LUser.resetBoard();
 			this->LUser.createNewMovingBlock();
 			this->RUser.resetBoard();
@@ -26,7 +28,18 @@ void GameManager::startGame() {
 			playGame();
 			break;
 		case 2:
-			system("cls");
+			clearScreen();
+			playGame();
+			break;
+		case 4: 
+			clearScreen();
+			this->isGameRunning = true;
+			GameConfig::setColorSupport(true);
+			this->LUser.resetBoard();
+			this->LUser.createNewMovingBlock();
+			this->RUser.resetBoard();
+			this->RUser.createNewMovingBlock();
+			this->LUser.resetScore();
 			playGame();
 			break;
 		case 9:
@@ -38,11 +51,12 @@ void GameManager::startGame() {
 
 int GameManager::showMenu() {
 	while (true) {
-		system("cls");
+		clearScreen();
 		cout << "Please select one of the following options in order to continue:" << endl;
-		cout << "(1) Start a new game" << endl;
+		cout << "(1) Start a new game - without colors" << endl;
 		if (this->isGameRunning)
 			cout << "(2) Continue a paused game" << endl;
+		cout << "(4) Start a new game - with colors" << endl;
 		cout << "(8) Present instructions and keys" << endl;
 		cout << "(9) EXIT" << endl;
 
@@ -50,13 +64,13 @@ int GameManager::showMenu() {
 
 		switch ((int)pressedChar) {
 		case '1':
-			system("cls");
+			clearScreen();
 			cout << "A new game will be started in 3 seconds.." << endl;
 			Sleep(3000);
 			return 1;
 		case '2':
 			if (this->isGameRunning) {
-				system("cls");
+				clearScreen();
 				cout << "The game will be resumed in 3 seconds.." << endl;
 				Sleep(3000);
 				return 2;
@@ -66,13 +80,18 @@ int GameManager::showMenu() {
 				Sleep(400);
 				break;
 			}
+		case '4': 
+			clearScreen();
+			cout << "A new game with colors will be started in 3 seconds.." << endl;
+			Sleep(3000);
+			return 4;
 		case '8':
-			system("cls");
+			clearScreen();
 			showInstructions();
 			Sleep(750);
 			break;
 		case '9':
-			system("cls");
+			clearScreen();
 			cout << "The game will exit in 3 seconds.." << endl;
 			Sleep(3000);
 			return 9;
@@ -90,7 +109,7 @@ void GameManager::playGame() {
 	bool leftBlockMoved = false;
 	bool rightBlockMoved = false;
 
-	srand((time(nullptr)));
+	//rand((time(nullptr)));
 	Sleep(1000);
 
 	while (this->isGameRunning)

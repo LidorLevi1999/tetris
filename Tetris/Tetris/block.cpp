@@ -13,7 +13,10 @@ Block::Block(char side) {
 	this->blockShape = getRandomShape();
 	this->rotateRightAmount = 0;
 	this->movedAmount = 0;
+	int randomValue = rand() % GameConfig::NUM_OF_COLORS;
+	this->blockColor = GameConfig::COLORS[randomValue];
 	buildBlockPoints();
+
 }
 
 
@@ -24,30 +27,30 @@ void Block::buildBlockPoints() {
 	if (this->side == 'R')
 		middleX += GameConfig::RIVAL_POS;
 
-	this->points[0] = Point(middleX, 2, '#');
+	this->points[0] = Point(middleX, 2, '#', this->blockColor);
 
 	switch (this->blockShape) {
 	case eTetriminoShape::O:
-		generate3NonCenterPoints(Point(middleX + 1, 2, '#'), Point(middleX + 1, 1, '#'), Point(middleX , 1, '#'));
+		generate3NonCenterPoints(Point(middleX + 1, 2, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor), Point(middleX , 1, '#', this->blockColor));
 		break;
 	case eTetriminoShape::T:
-		generate3NonCenterPoints(Point(middleX - 1, 2, '#'), Point(middleX + 1, 2, '#'), Point(middleX, 1, '#'));
+		generate3NonCenterPoints(Point(middleX - 1, 2, '#', this->blockColor), Point(middleX + 1, 2, '#', this->blockColor), Point(middleX, 1, '#', this->blockColor));
 		break;
 	case eTetriminoShape::L:
-		generate3NonCenterPoints(Point(middleX - 1, 2, '#'), Point(middleX + 1, 2, '#'), Point(middleX + 1, 1, '#'));
+		generate3NonCenterPoints(Point(middleX - 1, 2, '#', this->blockColor), Point(middleX + 1, 2, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor));
 		break;
 	case eTetriminoShape::J:
-		generate3NonCenterPoints(Point(middleX - 1, 1, '#'), Point(middleX - 1, 2, '#'), Point(middleX + 1, 2, '#'));
+		generate3NonCenterPoints(Point(middleX - 1, 1, '#' , this->blockColor), Point(middleX - 1, 2, '#', this->blockColor), Point(middleX + 1, 2, '#', this->blockColor));
 		break;
 	case eTetriminoShape::S:
-		generate3NonCenterPoints(Point(middleX - 1, 2, '#'), Point(middleX , 1, '#'), Point(middleX + 1, 1, '#'));
+		generate3NonCenterPoints(Point(middleX - 1, 2, '#', this->blockColor), Point(middleX , 1, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor));
 		break;
 	case eTetriminoShape::Z:
-		generate3NonCenterPoints(Point(middleX - 1, 1 , '#'), Point(middleX, 1, '#'), Point(middleX + 1, 2, '#'));
+		generate3NonCenterPoints(Point(middleX - 1, 1 , '#', this->blockColor), Point(middleX, 1, '#', this->blockColor), Point(middleX + 1, 2, '#', this->blockColor));
 		break;
 	case eTetriminoShape::I:
-		this->points[0] = Point(middleX, 1, '#');
-		generate3NonCenterPoints(Point(middleX - 1, 1, '#'), Point(middleX + 1, 1, '#'), Point(middleX + 2, 1, '#'));
+		this->points[0] = Point(middleX, 1, '#', this->blockColor);
+		generate3NonCenterPoints(Point(middleX - 1, 1, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor), Point(middleX + 2, 1, '#', this->blockColor));
 		break;
 	}
 }
@@ -104,11 +107,11 @@ void Block::fixITetereminoLastPoint() {
 	switch (this->rotateRightAmount) {
 	case 1:
 	case 3: 
-		this->points[3] = Point(center.getX(), center.getY() + 2, center.getSymbol());
+		this->points[3] = Point(center.getX(), center.getY() + 2, center.getSymbol(), this->blockColor);
 		break;
 	case 2:
 	case 0 :
-		this->points[3] = Point(center.getX() - 2, center.getY(), center.getSymbol());
+		this->points[3] = Point(center.getX() - 2, center.getY(), center.getSymbol(), this->blockColor);
 		break;
 	}
 }
