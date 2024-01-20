@@ -3,6 +3,7 @@
 
 #include <iostream>
 using namespace std;
+#include <Windows.h>
 
 Board::Board(char side) {
 	clearBoard();
@@ -33,7 +34,11 @@ void Board::drawBoard(char side) {
 	for (int row = 0; row <= GameConfig::BOARD_HEIGHT - 1; row++) {
 		cout << "|";  // Print the leftmost vertical bar
 		for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
-			cout << this->board[col][row].getSymbol();
+			char symbol = this->board[col][row].getSymbol();
+			if (symbol == '#')
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), this->board[col][row].getColor());
+			cout << symbol;
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
 		}
 		cout << '|';  // Print the rightmost vertical bar for the last column
 		gotoxy(startX, startY + row + 1);
@@ -54,6 +59,7 @@ void Board::updateBoardWithPoints(Point* points) {
 		row = points[i].getX() - xOffset;
 		col = points[i].getY() - 1;
 		this->board[row][col].setSymbol(points[i].getSymbol());
+		this->board[row][col].setColor(points[i].getColor());
 	}
 }
 

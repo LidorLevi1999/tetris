@@ -17,6 +17,7 @@ public:
 	void drawBoards();
 	void drawScore(); 
 	void updateScoreTable();
+	void declareWinner();
 };
 
 #endif

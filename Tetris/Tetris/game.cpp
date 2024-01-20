@@ -45,12 +45,10 @@ void GameManager::startGame() {
 		case 9:
 			return;
 		}
-
 	}
 }
 
 int GameManager::showMenu() {
-	while (true) {
 		clearScreen();
 		cout << "Please select one of the following options in order to continue:" << endl;
 		cout << "(1) Start a new game - without colors" << endl;
@@ -64,6 +62,7 @@ int GameManager::showMenu() {
 		cout << "Please switch your keyboard to English in order to play the game." << endl;
 		cout << "If needed, press Alt + Shift simultaneously to change the language." << endl << endl;
 
+		while (true) {
 		char pressedChar = _getch();
 
 		switch ((int)pressedChar) {
@@ -167,6 +166,10 @@ void GameManager::playGame() {
 
 				// User paused
 			case GameConfig::eKeys::ESC:
+				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+				cout << "The game has been paused, you will be moved to the main menu in 10 seconds." << endl;
+				cout << "Please note that you can resume the game by pressing (2) in the main menu." << endl;
+				Sleep(10000);
 				return;
 			}
 		}
@@ -174,52 +177,24 @@ void GameManager::playGame() {
 		leftBlockMoved = this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
 		rightBlockMoved = this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
 
-		// Checks if a block couldn't move, make it static and create new block
+		// Checks if a block couldn't move, make it static and create new block, checks for winnings
 		if (!leftBlockMoved && !rightBlockMoved) {
-			if (this->LUser.getMovingBlock().getMovedAmount() == 0 || this->RUser.getMovingBlock().getMovedAmount() == 0) {
-				updateScoreTable();
-				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-				if(this->LUser.getScore() > this->RUser.getScore())
-					cout << "Left player Won due to Higher score !!";
-				else if(this->RUser.getScore() > this->LUser.getScore())
-					cout << "Right player Won due to Higher score !!";
-				else
-					cout << "This is a TIE !!";
-				this->isGameRunning = false;
-				Sleep(3000);
-				return;
-			}
+			// I think if both of them are stuck, the game is over and this if is irrelevant
+			if (this->LUser.getMovingBlock().getMovedAmount() == 0 || this->RUser.getMovingBlock().getMovedAmount() == 0)
+				declareWinner();
 		}
 		if (!leftBlockMoved) {
-			if (this->LUser.getMovingBlock().getMovedAmount() == 0) {
-				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-				cout << "Right Player Won !" << endl << endl;
-				cout << "Press any key to return to main menu" << endl;
-				while (true) {
-					if (_kbhit())
-						break;
-					Sleep(10);
-				}
-				this->isGameRunning = false;
-				return;
-			}
-			this->LUser.updateBoardAndAssignGenerateNewBlock();
+			if (this->LUser.getMovingBlock().getMovedAmount() == 0)
+				declareWinner();
+
+			this->LUser.updateBoardAndGenerateNewBlock();
 			updateScoreTable();
 		}
 		if (!rightBlockMoved) {
-			if (this->RUser.getMovingBlock().getMovedAmount() == 0) {
-				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-				cout << "Left Player Won !";
-				cout << "Press any key to return to main menu" << endl;
-				while (true) {
-					if (_kbhit())
-						break;
-					Sleep(10);
-				}
-				this->isGameRunning = false;
-				return;
-			}
-			this->RUser.updateBoardAndAssignGenerateNewBlock();
+			if (this->RUser.getMovingBlock().getMovedAmount() == 0)
+				declareWinner();
+
+			this->RUser.updateBoardAndGenerateNewBlock();
 			updateScoreTable();
 		}
 		Sleep(800);
@@ -228,7 +203,7 @@ void GameManager::playGame() {
 
 void GameManager::showInstructions() {
 	// Brief explanation of Tetris
-	cout << "Hello and welcome to Lidor & Bar Tetris game!" << std::endl;
+	cout << "Hello and welcome to Lidor & Bar Tetris game!" << endl;
 	cout << "Tetris is a puzzle game where you must fit falling blocks into a line at the bottom of the playing board." << endl;
 	cout << "Completing a line clears it and earns points, the game ends when the blocks reach the top of the board." << endl << endl;
 
@@ -259,12 +234,15 @@ void GameManager::showInstructions() {
 	cout << "Press ESC key to return." << endl << endl;
 
 	while (true) {
-		if ((GameConfig::eKeys)_getch() == GameConfig::eKeys::ESC)
-			return;
-		else
+		if (_kbhit())
 		{
-			cout << "Invalid selection. Please try again." << endl;
-			Sleep(1000);
+			if ((GameConfig::eKeys)_getch() == GameConfig::eKeys::ESC)
+				return;
+			else
+			{
+				cout << "Invalid selection. Please try again." << endl;
+				Sleep(500);
+			}
 		}
 		Sleep(10);
 	}
@@ -297,4 +275,26 @@ void GameManager::updateScoreTable() {
 	cout << this->LUser.getScore();
 	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y + 1);
 	cout << this->RUser.getScore();
+}
+
+void GameManager::declareWinner() {
+	updateScoreTable(); // I'm not sure it's needed here
+
+	gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+	if (this->LUser.getScore() > this->RUser.getScore())
+		cout << "Left player Won due to Higher score !!" << endl;
+	else if (this->RUser.getScore() > this->LUser.getScore())
+		cout << "Right player Won due to Higher score !!" << endl;
+	else
+		cout << "This is a TIE !!" << endl;
+
+	cout << "Press any key to return to main menu" << endl;
+	while (true) {
+		if (_kbhit())
+			break;
+		Sleep(10);
+	}
+
+	this->isGameRunning = false;
+	return;
 }

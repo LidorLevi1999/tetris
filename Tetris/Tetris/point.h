@@ -20,6 +20,8 @@ public:
 	void move(GameConfig::eKeys key, bool shouldDraw = true);
 	char getSymbol() const { return this->symbol; };
 	void setSymbol(char symbol) { this->symbol = symbol; };
+	int getColor() const { return this->color; };
+	void setColor(int color) { this->color = color; };
 	int getX() const { return this->x; };
 	int getY() const { return this->y; };
 	void setCoordinates(int x, int y, bool shouldDraw = false);

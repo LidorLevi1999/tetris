@@ -15,15 +15,12 @@ public:
 	Block& getMovingBlock() { return this->movingBlock; };
 	Board getBoard() { return this->board; };
 	bool moveMovingBlock(GameConfig::eKeys direction);
-	void updateBoardAndAssignGenerateNewBlock();
+	void updateBoardAndGenerateNewBlock();
 	bool rotateMovingBlock(bool clockWise = true);
 	void createNewMovingBlock();
 	void resetBoard();
-	void increaseScore(int scoreRecieved) { this->score += scoreRecieved; };
+	void increaseScore(int scoreReceived) { this->score += scoreReceived; };
 	void resetScore() { this->score = 0; };
-public:
-private:
-
 };
 
 #endif

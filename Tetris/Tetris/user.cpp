@@ -61,7 +61,7 @@ bool User::rotateMovingBlock(bool clockWise) {
 	return true;
 }
 
-void User::updateBoardAndAssignGenerateNewBlock() {
+void User::updateBoardAndGenerateNewBlock() {
 	int pointsRecieved;
 	this->board.updateBoardWithPoints(this->movingBlock.getBlockPoints());
 	pointsRecieved = this->board.validateBoard();

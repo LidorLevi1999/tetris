@@ -16,9 +16,7 @@ Block::Block(char side) {
 	int randomValue = rand() % GameConfig::NUM_OF_COLORS;
 	this->blockColor = GameConfig::COLORS[randomValue];
 	buildBlockPoints();
-
 }
-
 
 //Build the 4 points of the block.
 //Assume that a block is being created only at the middle top of the board.
@@ -55,7 +53,6 @@ void Block::buildBlockPoints() {
 	}
 }
 
-
 //Assuming that the points array property of the block first element is the "center" of the block
 //It assign the values of all 3 non "center" points.
 void Block::generate3NonCenterPoints(Point p1, Point p2, Point p3) {
@@ -63,7 +60,6 @@ void Block::generate3NonCenterPoints(Point p1, Point p2, Point p3) {
 	this->points[2] = p2;
 	this->points[3] = p3;
 }
-
 
 //Takes the Block(assuming only NON I or O is assigned here) and makes it a 3x3 matrix so it will be easier to rotate
 char ** Block::fromBlockToMatrix() {
@@ -78,7 +74,6 @@ char ** Block::fromBlockToMatrix() {
 	}
 	return matrix;
 }
-
 
 //Takes a 3x3 matrix after rotation and makes it a block again while changing the values as it should.
 //TODO : remove matrixDimension.
@@ -101,7 +96,6 @@ void Block::fromMatrixToBlock(char** matrix) {
 	freeMatrix(matrix);
 }
 
-
 void Block::fixITetereminoLastPoint() {
 	Point center = this->points[0];
 	switch (this->rotateRightAmount) {
@@ -116,7 +110,6 @@ void Block::fixITetereminoLastPoint() {
 	}
 }
 
-
 //Free all arrays in the matrix
 //TODO : remove size ?
 void Block::freeMatrix(char** matrix) {
@@ -126,7 +119,6 @@ void Block::freeMatrix(char** matrix) {
 	delete matrix;
 }
 
-
 //Moves the block to the relevant key.
 //We can assume input is valid cause validated at Board class.
 bool Block::moveBlock(GameConfig::eKeys key, bool shouldDraw) {
@@ -135,7 +127,6 @@ bool Block::moveBlock(GameConfig::eKeys key, bool shouldDraw) {
 	}
 	return true;
 }
-
 
 Block::eTetriminoShape Block::getRandomShape() {
 	return Block::eTetriminoShape::I;
@@ -152,7 +143,6 @@ Block::eTetriminoShape Block::getRandomShape() {
 	}
 }
 
-
 //Rotates all points in the block clockwise.
 void Block::rotateClockwise() {
 	if (this->blockShape == eTetriminoShape::O)
@@ -167,14 +157,12 @@ void Block::rotateClockwise() {
 	}
 }
 
-
 //Rotates the points at the block counter clockwise.
 void Block::rotateCounterClockwise() {
 	rotateClockwise();
 	rotateClockwise();
 	rotateClockwise();
 }
-
 
 // Function to rotate the matrix 90 degree clockwise
 void Block::rotateMatrixClockwise(char** matrix){
@@ -193,13 +181,11 @@ void Block::rotateMatrixClockwise(char** matrix){
 	}
 }
 
-
 void Block::increaseRotateRightAmount() {
 	this->rotateRightAmount++;
 	if (this->rotateRightAmount == 4)
 		this->rotateRightAmount = 0;
 }
-
 
 void Block::copyBlock(Block& block) {
 	for (int i = 0; i < 4; i++) {
@@ -208,7 +194,6 @@ void Block::copyBlock(Block& block) {
 	this->rotateRightAmount = block.rotateRightAmount;
 	this->movedAmount = block.movedAmount;
 }
-
 
 void Block::drawBlock() {
 	for (int i = 0; i < 4; i++) {
