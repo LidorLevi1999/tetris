@@ -7,6 +7,7 @@ class User
 	char side;
 	Block movingBlock;
 	Board board;
+
 public:
 	User(char side);
 	int getScore() const { return this->score; };

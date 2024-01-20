@@ -58,7 +58,11 @@ int GameManager::showMenu() {
 			cout << "(2) Continue a paused game" << endl;
 		cout << "(4) Start a new game - with colors" << endl;
 		cout << "(8) Present instructions and keys" << endl;
-		cout << "(9) EXIT" << endl;
+		cout << "(9) EXIT" << endl << endl;
+
+		// Reminder for playing
+		cout << "Please switch your keyboard to English in order to play the game." << endl;
+		cout << "If needed, press Alt + Shift simultaneously to change the language." << endl << endl;
 
 		char pressedChar = _getch();
 
@@ -103,7 +107,6 @@ int GameManager::showMenu() {
 	}
 }
 
-
 void GameManager::playGame() {
 	drawBoards();
 	bool leftBlockMoved = false;
@@ -116,56 +119,49 @@ void GameManager::playGame() {
 	{
 		if (_kbhit()) {
 			char pressedChar = _getch();
-
+			pressedChar = tolower(pressedChar);
 			leftBlockMoved = false;
 			rightBlockMoved = false;
+
 			switch ((GameConfig::eKeys)pressedChar) {
+
 				//Left cases
 			case GameConfig::eKeys::LEFTP1:
-			case GameConfig::eKeys::LEFTP1C:
 				this->LUser.moveMovingBlock(GameConfig::eKeys::LEFTP1);
 				break;
 			case GameConfig::eKeys::LEFTP2:
-			case GameConfig::eKeys::LEFTP2C:
 				this->RUser.moveMovingBlock(GameConfig::eKeys::LEFTP2);
 				break;
+
 				//Right cases
 			case GameConfig::eKeys::RIGHTP1:
-			case GameConfig::eKeys::RIGHTP1C:
 				this->LUser.moveMovingBlock(GameConfig::eKeys::RIGHTP1);
 				break;
 			case GameConfig::eKeys::RIGHTP2:
-			case GameConfig::eKeys::RIGHTP2C:
 				this->RUser.moveMovingBlock(GameConfig::eKeys::RIGHTP2);
 				break;
 
 				//Drop cases
 			case GameConfig::eKeys::DROPP1:
-			case GameConfig::eKeys::DROPP1C:
 				this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
 				break;
 			case GameConfig::eKeys::DROPP2:
-			case GameConfig::eKeys::DROPP2C:
 				this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
 				break;
 
 				// Rotate Clockwise cases
 			case GameConfig::eKeys::ROTATE_CLOCKP1:
-			case GameConfig::eKeys::ROTATE_CLOCKP1C:
 				this->LUser.rotateMovingBlock();
 				break;
 			case GameConfig::eKeys::ROTATE_CLOCKP2:
-			case GameConfig::eKeys::ROTATE_CLOCKP2C:
 				this->RUser.rotateMovingBlock();
 				break;
 
 				// Rotate Counter Clockwise cases
 			case GameConfig::eKeys::ROTATE_COUNTERP1:
-			case GameConfig::eKeys::ROTATE_COUNTERP1C:
 				this->LUser.rotateMovingBlock(false);
 				break;
 			case GameConfig::eKeys::ROTATE_COUNTERP2:
-			case GameConfig::eKeys::ROTATE_COUNTERP2C:
 				this->RUser.rotateMovingBlock(false);
 				break;
 
@@ -197,9 +193,14 @@ void GameManager::playGame() {
 		if (!leftBlockMoved) {
 			if (this->LUser.getMovingBlock().getMovedAmount() == 0) {
 				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-				cout << "Right Player Won !";
+				cout << "Right Player Won !" << endl << endl;
+				cout << "Press any key to return to main menu" << endl;
+				while (true) {
+					if (_kbhit())
+						break;
+					Sleep(10);
+				}
 				this->isGameRunning = false;
-				Sleep(3000);
 				return;
 			}
 			this->LUser.updateBoardAndAssignGenerateNewBlock();
@@ -209,8 +210,13 @@ void GameManager::playGame() {
 			if (this->RUser.getMovingBlock().getMovedAmount() == 0) {
 				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
 				cout << "Left Player Won !";
+				cout << "Press any key to return to main menu" << endl;
+				while (true) {
+					if (_kbhit())
+						break;
+					Sleep(10);
+				}
 				this->isGameRunning = false;
-				Sleep(3000);
 				return;
 			}
 			this->RUser.updateBoardAndAssignGenerateNewBlock();
@@ -219,7 +225,6 @@ void GameManager::playGame() {
 		Sleep(800);
 	}
 }
-
 
 void GameManager::showInstructions() {
 	// Brief explanation of Tetris
@@ -246,6 +251,10 @@ void GameManager::showInstructions() {
 	cout << "Rotate Counterclockwise: Press 'i' or 'I'" << endl;
 	cout << "Drop: Press 'm' or 'M'" << endl << endl;
 
+	// Reminder for playing
+	cout << "Please switch your keyboard to English in order to play the game." << endl;
+	cout << "If needed, press Alt + Shift simultaneously to change the language." << endl << endl;
+
 	// Instruction how to return to main menu
 	cout << "Press ESC key to return." << endl << endl;
 
@@ -257,9 +266,9 @@ void GameManager::showInstructions() {
 			cout << "Invalid selection. Please try again." << endl;
 			Sleep(1000);
 		}
+		Sleep(10);
 	}
 }
-
 
 void GameManager::drawBoards() {
 	this->LUser.getBoard().drawBoard('L');
