@@ -38,7 +38,7 @@ bool User::moveMovingBlock(GameConfig::eKeys direction) {
 
 bool User::rotateMovingBlock(bool clockWise) {
 	Block copyBlock = this->movingBlock;
-	int xOffset = copyBlock.getSide() == 'L' ? 0 : GameConfig::RIVAL_POS;
+	int xOffset = copyBlock.getSide() == 'L' ? 1 : GameConfig::RIVAL_POS + 1;
 
 	if (clockWise)
 		copyBlock.rotateClockwise();
@@ -49,7 +49,7 @@ bool User::rotateMovingBlock(bool clockWise) {
 	for (int i = 0; i < 4; i++) {
 		xToCheck = points[i].getX() - xOffset;
 		yToCheck = points[i].getY() - 1;
-		if (xToCheck < 0 || xToCheck > GameConfig::BOARD_WIDTH) return false;
+		if (xToCheck < 0 || xToCheck > GameConfig::BOARD_WIDTH - 1) return false;
 		if (yToCheck < 0 || yToCheck > GameConfig::BOARD_HEIGHT) return false;
 		pointSymbol = this->board.getBoard()[(xToCheck)][(yToCheck)];
 		if (pointSymbol != ' ')

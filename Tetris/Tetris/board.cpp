@@ -51,7 +51,7 @@ void Board::drawBoard(char side) {
 
 
 void Board::updateBoardWithPoints(Point* points) {
-	int xOffset = this->side == 'L' ? 1 : GameConfig::RIVAL_POS;
+	int xOffset = this->side == 'L' ? 1 : GameConfig::RIVAL_POS + 1;
 	int row, col;
 	for (int i = 0; i < 4; i++) {
 		row = points[i].getX() - xOffset;
