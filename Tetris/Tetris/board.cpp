@@ -69,23 +69,6 @@ void Board::updateBoardWithPoints(Point* points) {
 	}
 }
 
-// Old validate board, need to be deleted.
-//// Validates and clears full rows, updating the board and returning the score
-//int Board::validateBoard() {
-//	int scoreRecieved = 0;
-//	int multiplier = 1;
-//	for (int i = GameConfig::BOARD_HEIGHT - 1; i >= 0; i--) {
-//		if (isAllRowFull(i)) {
-//			bombRowAndFixBoard(i);
-//			drawBoard(this->side);
-//			i++; // Recheck the same row after clearing
-//			scoreRecieved += (5 * multiplier);
-//			multiplier *= 2;
-//		}
-//	}
-//	return scoreRecieved;
-//}
-
 // Validates and clears full rows, updating the board and returning the score
 int Board::validateBoard() {
 	int scoreReceived = 0;
