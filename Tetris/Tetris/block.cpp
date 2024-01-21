@@ -65,9 +65,15 @@ void Block::generate3NonCenterPoints(Point p1, Point p2, Point p3) {
 }
 
 // Takes the Block (assuming only NON I or O is assigned here) and makes it a 3x3 matrix so it will be easier to rotate
-char ** Block::fromBlockToMatrix() {
+void Block::fromBlockToMatrix(char matrix[3][3]) {
 	int matrixElements = this->blockShape == eTetriminoShape::I ? 3 : 4;
-	char** matrix = buildCharMatrix(3);
+
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			matrix[i][j] = ' ';
+		}
+	}
+
 	matrix[1][1] = this->points[0].getSymbol();
 	int xDiffFromCenter, yDiffFromCenter;
 	for (int i = 1; i < matrixElements; i++) {
@@ -75,12 +81,10 @@ char ** Block::fromBlockToMatrix() {
 		yDiffFromCenter = this->points[0].getY() - this->points[i].getY();
 		matrix[1 + xDiffFromCenter][1 + yDiffFromCenter] = this->points[0].getSymbol();
 	}
-	return matrix;
 }
 
 // Takes a 3x3 matrix after rotation and makes it a block again while changing the values as it should.
-//TODO : remove matrixDimension.
-void Block::fromMatrixToBlock(char** matrix) {
+void Block::fromMatrixToBlock(char matrix[3][3]) {
 	Point center = this->points[0];
 	int pointsMoved = 0;
 	int xDiffFromCenter;
@@ -95,7 +99,6 @@ void Block::fromMatrixToBlock(char** matrix) {
 			}
 		}
 	}
-	freeMatrix(matrix);
 }
 
 // Ensures that the last point of the I Tetrimino is correctly positioned after rotation
@@ -111,15 +114,6 @@ void Block::fixITetereminoLastPoint() {
 		this->points[3] = Point(center.getX() - 2, center.getY(), center.getSymbol(), this->blockColor);
 		break;
 	}
-}
-
-// Free all arrays in the matrix
-//TODO : remove size ?
-void Block::freeMatrix(char** matrix) {
-	for (int i = 0; i < 3; i++) {
-		delete[] matrix[i];
-	}
-	delete[] matrix;
 }
 
 // Moves the block to the relevant key.
@@ -150,7 +144,9 @@ Block::eTetriminoShape Block::getRandomShape() {
 void Block::rotateClockwise() {
 	if (this->blockShape == eTetriminoShape::O)
 		return;
-	char** matrix = fromBlockToMatrix();
+	char matrix[3][3];
+	// Call fromBlockToMatrix with the fixed-size matrix
+	fromBlockToMatrix(matrix);
 	rotateMatrixClockwise(matrix);
 	fromMatrixToBlock(matrix);
 	this->increaseRotateRightAmount();
@@ -168,7 +164,7 @@ void Block::rotateCounterClockwise() {
 }
 
 // Function to rotate the matrix 90 degrees clockwise
-void Block::rotateMatrixClockwise(char** matrix){
+void Block::rotateMatrixClockwise(char matrix[3][3]) {
 	int dimension = 3;
 	// Traverse each cycle
 	for (char i = 0; i < dimension / 2; i++) {
