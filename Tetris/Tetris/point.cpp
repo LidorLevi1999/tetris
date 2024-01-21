@@ -19,11 +19,9 @@ Point::Point(int x, int y, char symbol, int color) {
 // Function to set the coordinates of the point and optionally draw it
 void Point::setCoordinates(int x, int y, bool shouldDraw) {
 	if (shouldDraw) {
-		draw(GameConfig::COLORS[0], ' ');
+		draw(' ');
 		this->x = x;
 		this->y = y;
-		//TODO : change below to the point color
-		draw(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED, ' ');
 	}
 	else {
 		this->x = x;
@@ -32,8 +30,7 @@ void Point::setCoordinates(int x, int y, bool shouldDraw) {
 }
 
 // Function to draw the point with a background color
-void Point::draw(int backcolor) {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
+void Point::draw() {
 	gotoxy(this->x + GameConfig::MIN_X - 1, this->y + GameConfig::MIN_Y - 1);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), this->color);
 	cout << this->symbol;
@@ -41,7 +38,7 @@ void Point::draw(int backcolor) {
 }
 
 // Function to draw the point with a background color and a specific symbol
-void Point::draw(int backcolor, char symbol)
+void Point::draw(char symbol)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
 	gotoxy(this->x + GameConfig::MIN_X - 1, this->y + GameConfig::MIN_Y - 1);

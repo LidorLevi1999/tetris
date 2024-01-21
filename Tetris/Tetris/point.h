@@ -22,10 +22,10 @@ public:
     Point(int x, int y, char symbol, int color);
 
     // Function to draw the point with a background color
-    void draw(int backcolor);
+    void draw();
 
-    // Function to draw the point with a background color and a specific symbol
-    void draw(int backcolor, char symbol);
+    // Function to draw the point with a specific symbol
+    void draw(char symbol);
 
     // Function to move the point based on the input key
     void move(GameConfig::eKeys key, bool shouldDraw = true);

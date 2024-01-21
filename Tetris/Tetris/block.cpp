@@ -198,6 +198,6 @@ void Block::copyBlock(Block& block) {
 // Draws the block by calling the draw method for each of its points
 void Block::drawBlock() {
 	for (int i = 0; i < 4; i++) {
-		this->points[i].draw(GameConfig::COLORS[0]);
+		this->points[i].draw();
 	}
 }

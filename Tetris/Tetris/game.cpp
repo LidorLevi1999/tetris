@@ -256,6 +256,8 @@ void GameManager::playGame() {
 			this->RUser.updateBoardAndGenerateNewBlock();
 			updateScoreTable();
 		}
+		
+		// Game speed
 		Sleep(800);
 	}
 }
@@ -265,11 +267,11 @@ void GameManager::handleBlockNotMoved(bool isHighScore) {
 	// Determine the winner or tie based on scores
 	if (isHighScore) {
 		if (this->LUser.getScore() > this->RUser.getScore())
-			cout << "Left player Won due to Higher score !!";
+			cout << "Left player Won due to Higher score !!" << endl;
 		else if (this->RUser.getScore() > this->LUser.getScore())
-			cout << "Right player Won due to Higher score !!";
+			cout << "Right player Won due to Higher score !!" << endl;
 		else
-			cout << "This is a TIE !!";
+			cout << "This is a TIE !!" << endl;
 	}
 
 	cout << "Press any key to return to main menu" << endl;
@@ -282,7 +284,6 @@ void GameManager::handleBlockNotMoved(bool isHighScore) {
 	}
 
 	this->isGameRunning = false;
-	Sleep(3000);
 }
 
 // Draw the game boards and moving blocks
