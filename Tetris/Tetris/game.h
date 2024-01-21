@@ -1,23 +1,47 @@
+// Header file for the GameManager class.
+
 #ifndef __GAME_H
 #define __GAME_H
 
 #include "user.h"
+
 class GameManager 
 {
 	User LUser;
 	User RUser;
 	bool isGameRunning;
 	bool isGameSupportColors;
+
 public:
-	GameManager() : LUser('L'), RUser('R') { this->isGameRunning = false;  this->isGameSupportColors = false; };
-	void startGame();
-	int showMenu();
-	void showInstructions();
-	void playGame();
-	void drawBoards();
-	void drawScore(); 
-	void updateScoreTable();
-	void declareWinner();
+    // Constructor
+    GameManager() : LUser('L'), RUser('R'), isGameRunning(false), isGameSupportColors(false) {};
+
+    // Method to set up a new game
+    void setupNewGame(bool useColors);
+
+    // Start the game and handle menu selections
+    void startGame();
+
+    // Display the main menu and return the user's selection
+    int showMenu();
+
+    // Display game instructions
+    void showInstructions();
+
+    // Play the main game loop
+    void playGame();
+
+    // Method to handle the case when a player wins or the game is tied
+    void handleBlockNotMoved(bool isHighScore);
+
+    // Draw the game boards and moving blocks
+    void drawBoards();
+
+    // Draw the scores for both players
+    void drawScore();
+
+    // Update the score table on the screen
+    void updateScoreTable();
 };
 
 #endif

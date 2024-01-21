@@ -1,4 +1,5 @@
-#pragma once
+// Header file for the Block class, representing a Tetris block
+
 #ifndef __BLOCK_H
 #define __BLOCK_H
 #include "point.h"

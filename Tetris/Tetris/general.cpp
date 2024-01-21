@@ -1,10 +1,10 @@
 #include "general.h"
-#include <windows.h> // for gotoxy
-#include <process.h> // for system
+#include <windows.h>
+#include <process.h>
 #include <iostream>
 using namespace std;
 
-
+// Function to set the console cursor position
 void gotoxy(int x, int y){
 	HANDLE hConsoleOutput;
 	COORD dwCursorPosition;
@@ -15,12 +15,12 @@ void gotoxy(int x, int y){
 	SetConsoleCursorPosition(hConsoleOutput, dwCursorPosition);
 }
 
-
+// Function to clear the console screen
 void clearScreen(){
 	system("cls");
 }
 
-
+// Function to dynamically allocate a character matrix
 char** buildCharMatrix(int rowsAndCols) {
 	char** matrix = new char* [rowsAndCols];
 	for (int i = 0; i < rowsAndCols; ++i) {

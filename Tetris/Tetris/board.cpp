@@ -1,15 +1,19 @@
+// Implementation file for the Board class.
+
 #include "board.h"
 #include "general.h"
-
 #include <iostream>
-using namespace std;
 #include <Windows.h>
 
+using namespace std;
+
+// Constructor
 Board::Board(char side) {
 	clearBoard();
 	this->side = side;
 }
 
+// Clears the entire game board
 void Board::clearBoard() {
 	for (int row = 0; row < GameConfig::BOARD_HEIGHT; row++) {
 		for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
@@ -18,6 +22,7 @@ void Board::clearBoard() {
 	}
 }
 
+// Draws the game board, including borders and current block positions
 void Board::drawBoard(char side) {
 	int startX = 0, startY = 0;
 	if (side == 'R')
@@ -52,6 +57,7 @@ void Board::drawBoard(char side) {
 	this->side = side;
 }
 
+// Updates the game board with the current block's points
 void Board::updateBoardWithPoints(Point* points) {
 	int xOffset = this->side == 'L' ? 1 : GameConfig::RIVAL_POS + 1;
 	int row, col;
@@ -63,32 +69,56 @@ void Board::updateBoardWithPoints(Point* points) {
 	}
 }
 
+// Old validate board, need to be deleted.
+//// Validates and clears full rows, updating the board and returning the score
+//int Board::validateBoard() {
+//	int scoreRecieved = 0;
+//	int multiplier = 1;
+//	for (int i = GameConfig::BOARD_HEIGHT - 1; i >= 0; i--) {
+//		if (isAllRowFull(i)) {
+//			bombRowAndFixBoard(i);
+//			drawBoard(this->side);
+//			i++; // Recheck the same row after clearing
+//			scoreRecieved += (5 * multiplier);
+//			multiplier *= 2;
+//		}
+//	}
+//	return scoreRecieved;
+//}
+
+// Validates and clears full rows, updating the board and returning the score
 int Board::validateBoard() {
-	int scoreRecieved = 0;
+	int scoreReceived = 0;
 	int multiplier = 1;
+	bool redrawRequired = false;
+
 	for (int i = GameConfig::BOARD_HEIGHT - 1; i >= 0; i--) {
 		if (isAllRowFull(i)) {
 			bombRowAndFixBoard(i);
-			drawBoard(this->side);
-			i++;
-			scoreRecieved += (5 * multiplier);
+			redrawRequired = true;
+			scoreReceived += (5 * multiplier);
 			multiplier *= 2;
 		}
 	}
-	return scoreRecieved;
+
+	if (redrawRequired)
+		drawBoard(this->side);
+
+	return scoreReceived;
 }
 
+// Checks if a given row is completely filled with blocks
 bool Board::isAllRowFull(int row) const {
 	for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
 		if (this->board[col][row].getSymbol() == ' ')
 			return false;
 	}
-	
 	return true;
 }
 
+// Clears a filled row and shifts the above rows down
 void Board::bombRowAndFixBoard(int row) {
-	for (row; row > 0; row--) {
+	for (; row > 0; row--) {
 		for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
 			this->board[col][row] = this->board[col][row - 1];
 		}

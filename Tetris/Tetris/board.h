@@ -1,3 +1,5 @@
+// Header file for the Board class, representing the Tetris game board.
+
 #ifndef __BOARD_H
 #define __BOARD_H
 #include "block.h"

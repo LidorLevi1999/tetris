@@ -1,6 +1,10 @@
+// Header file for the User class.
+
 #ifndef __USER_H
 #define __USER_H
+
 #include "board.h"
+
 class User
 {
 	int score;
@@ -9,16 +13,30 @@ class User
 	Board board;
 
 public:
+	// Constructor
 	User(char side);
+
+	// Getter methods
 	int getScore() const { return this->score; };
 	int	getSide() const { return this->side; };
 	Block& getMovingBlock() { return this->movingBlock; };
 	Board getBoard() { return this->board; };
-	bool moveMovingBlock(GameConfig::eKeys direction);
-	void updateBoardAndGenerateNewBlock();
-	bool rotateMovingBlock(bool clockWise = true);
-	void createNewMovingBlock();
+
+	// Reset the user's board
 	void resetBoard();
+
+	// Move the current moving block based on user input
+	bool moveMovingBlock(GameConfig::eKeys direction);
+
+	// Rotate the current moving block
+	bool rotateMovingBlock(bool clockWise = true);
+
+	// Update the board and generate a new moving block
+	void updateBoardAndGenerateNewBlock();
+
+	// Create a new moving block for the user
+	void createNewMovingBlock();
+
 	void increaseScore(int scoreReceived) { this->score += scoreReceived; };
 	void resetScore() { this->score = 0; };
 };

@@ -1,25 +1,28 @@
+// Implementation file for the Block class.
+
 #include "block.h"
-#include "Windows.h"
 #include "gameConfig.h"
-#include <iostream>
 #include "general.h"
 #include <array>
 
-using namespace std;
-
-//Constructor;
+// Constructor;
 Block::Block(char side) {
+	// Initialize member variables
 	this->side = side;
 	this->blockShape = getRandomShape();
 	this->rotateRightAmount = 0;
 	this->movedAmount = 0;
+
+	// Choose a random color for the block
 	int randomValue = rand() % GameConfig::NUM_OF_COLORS;
 	this->blockColor = GameConfig::COLORS[randomValue];
+
+	// Build the block points based on its shape
 	buildBlockPoints();
 }
 
-//Build the 4 points of the block.
-//Assume that a block is being created only at the middle top of the board.
+// Build the 4 points of the block.
+// Assume that a block is being created only at the middle top of the board.
 void Block::buildBlockPoints() {
 	int middleX = (GameConfig::BOARD_WIDTH + 1) / 2;
 	if (this->side == 'R')
@@ -53,15 +56,15 @@ void Block::buildBlockPoints() {
 	}
 }
 
-//Assuming that the points array property of the block first element is the "center" of the block
-//It assign the values of all 3 non "center" points.
+// Assuming that the points array property of the block first element is the "center" of the block
+// It assigns the values of all 3 non "center" points.
 void Block::generate3NonCenterPoints(Point p1, Point p2, Point p3) {
 	this->points[1] = p1;
 	this->points[2] = p2;
 	this->points[3] = p3;
 }
 
-//Takes the Block(assuming only NON I or O is assigned here) and makes it a 3x3 matrix so it will be easier to rotate
+// Takes the Block (assuming only NON I or O is assigned here) and makes it a 3x3 matrix so it will be easier to rotate
 char ** Block::fromBlockToMatrix() {
 	int matrixElements = this->blockShape == eTetriminoShape::I ? 3 : 4;
 	char** matrix = buildCharMatrix(3);
@@ -75,7 +78,7 @@ char ** Block::fromBlockToMatrix() {
 	return matrix;
 }
 
-//Takes a 3x3 matrix after rotation and makes it a block again while changing the values as it should.
+// Takes a 3x3 matrix after rotation and makes it a block again while changing the values as it should.
 //TODO : remove matrixDimension.
 void Block::fromMatrixToBlock(char** matrix) {
 	Point center = this->points[0];
@@ -87,7 +90,6 @@ void Block::fromMatrixToBlock(char** matrix) {
 			if (matrix[i][j] == center.getSymbol() && (i != 1 || j != 1)) {
 				xDiffFromCenter = i - 1;
 				yDiffFromCenter = j - 1;
-				//this->points[pointsMoved + 1] = Point(center.getX() + xDiffFromCenter, center.getY() + yDiffFromCenter, center.getSymbol());
 				this->points[pointsMoved + 1].setCoordinates(center.getX() + xDiffFromCenter, center.getY() + yDiffFromCenter);
 				pointsMoved++;
 			}
@@ -96,6 +98,7 @@ void Block::fromMatrixToBlock(char** matrix) {
 	freeMatrix(matrix);
 }
 
+// Ensures that the last point of the I Tetrimino is correctly positioned after rotation
 void Block::fixITetereminoLastPoint() {
 	Point center = this->points[0];
 	switch (this->rotateRightAmount) {
@@ -110,17 +113,17 @@ void Block::fixITetereminoLastPoint() {
 	}
 }
 
-//Free all arrays in the matrix
+// Free all arrays in the matrix
 //TODO : remove size ?
 void Block::freeMatrix(char** matrix) {
 	for (int i = 0; i < 3; i++) {
-		delete matrix[i];
+		delete[] matrix[i];
 	}
-	delete matrix;
+	delete[] matrix;
 }
 
-//Moves the block to the relevant key.
-//We can assume input is valid cause validated at Board class.
+// Moves the block to the relevant key.
+// We can assume input is valid cause validated at Board class.
 bool Block::moveBlock(GameConfig::eKeys key, bool shouldDraw) {
 	for (int i = 0; i < 4; i++) {
 		this->points[i].move(key, shouldDraw);
@@ -128,6 +131,7 @@ bool Block::moveBlock(GameConfig::eKeys key, bool shouldDraw) {
 	return true;
 }
 
+// Returns a random Tetrimino shape
 Block::eTetriminoShape Block::getRandomShape() {
 
 	int randomValue = rand() % 7;
@@ -142,7 +146,7 @@ Block::eTetriminoShape Block::getRandomShape() {
 	}
 }
 
-//Rotates all points in the block clockwise.
+// Rotates all points in the block clockwise.
 void Block::rotateClockwise() {
 	if (this->blockShape == eTetriminoShape::O)
 		return;
@@ -156,21 +160,20 @@ void Block::rotateClockwise() {
 	}
 }
 
-//Rotates the points at the block counter clockwise.
+// Rotates the points at the block counter clockwise.
 void Block::rotateCounterClockwise() {
 	rotateClockwise();
 	rotateClockwise();
 	rotateClockwise();
 }
 
-// Function to rotate the matrix 90 degree clockwise
+// Function to rotate the matrix 90 degrees clockwise
 void Block::rotateMatrixClockwise(char** matrix){
 	int dimension = 3;
 	// Traverse each cycle
 	for (char i = 0; i < dimension / 2; i++) {
 		for (char j = i; j < dimension - i - 1; j++) {
-			// Swap elements of each cycle
-			// in clockwise direction
+			// Swap elements of each cycle in clockwise direction
 			char temp = matrix[i][j];
 			matrix[i][j] = matrix[dimension - 1 - j][i];
 			matrix[dimension - 1 - j][i] = matrix[dimension - 1 - i][dimension - 1 - j];
@@ -180,12 +183,14 @@ void Block::rotateMatrixClockwise(char** matrix){
 	}
 }
 
+// Increases the rotateRightAmount, ensuring it stays within the range [0, 3]
 void Block::increaseRotateRightAmount() {
 	this->rotateRightAmount++;
 	if (this->rotateRightAmount == 4)
 		this->rotateRightAmount = 0;
 }
 
+// Copies the properties of another block to this block
 void Block::copyBlock(Block& block) {
 	for (int i = 0; i < 4; i++) {
 		this->points[i].setCoordinates(block.points[i].getX(), block.points[i].getY(), true);
@@ -194,6 +199,7 @@ void Block::copyBlock(Block& block) {
 	this->movedAmount = block.movedAmount;
 }
 
+// Draws the block by calling the draw method for each of its points
 void Block::drawBlock() {
 	for (int i = 0; i < 4; i++) {
 		this->points[i].draw(GameConfig::COLORS[0]);
