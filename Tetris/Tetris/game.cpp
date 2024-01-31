@@ -159,53 +159,38 @@ void GameManager::showInstructions() {
 // Play the main game loop
 void GameManager::playGame() {
 	drawBoards();
-	bool leftBlockMoved = false;
-	bool rightBlockMoved = false;
+	bool leftBlockMoved , rightBlockMoved = false;
 
 	while (this->isGameRunning) {
 		if (_kbhit()) {
 			char pressedChar = _getch();
 			pressedChar = tolower(pressedChar);
-			leftBlockMoved = false;
-			rightBlockMoved = false;
+			leftBlockMoved = rightBlockMoved = false;
 
 			switch ((GameConfig::eKeys)pressedChar) {
-
-				// Left player controls
+			// Left player controls
 			case GameConfig::eKeys::LEFTP1:
-				this->LUser.moveMovingBlock(GameConfig::eKeys::LEFTP1);
-				break;
 			case GameConfig::eKeys::RIGHTP1:
-				this->LUser.moveMovingBlock(GameConfig::eKeys::RIGHTP1);
-				break;
 			case GameConfig::eKeys::DROPP1:
-				this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
+				this->LUser.moveMovingBlock((GameConfig::eKeys)pressedChar);
 				break;
 			case GameConfig::eKeys::ROTATE_CLOCKP1:
-				this->LUser.rotateMovingBlock();
-				break;
 			case GameConfig::eKeys::ROTATE_COUNTERP1:
-				this->LUser.rotateMovingBlock(false);
+				this->LUser.rotateMovingBlock((GameConfig::eKeys)pressedChar == GameConfig::eKeys::ROTATE_CLOCKP1);
 				break;
 
-				// Right player controls
+			// Right player controls
 			case GameConfig::eKeys::LEFTP2:
-				this->RUser.moveMovingBlock(GameConfig::eKeys::LEFTP2);
-				break;
 			case GameConfig::eKeys::RIGHTP2:
-				this->RUser.moveMovingBlock(GameConfig::eKeys::RIGHTP2);
-				break;
 			case GameConfig::eKeys::DROPP2:
-				this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
+				this->RUser.moveMovingBlock((GameConfig::eKeys)pressedChar);
 				break;
 			case GameConfig::eKeys::ROTATE_CLOCKP2:
-				this->RUser.rotateMovingBlock();
-				break;
 			case GameConfig::eKeys::ROTATE_COUNTERP2:
-				this->RUser.rotateMovingBlock(false);
+				this->RUser.rotateMovingBlock((GameConfig::eKeys)pressedChar == GameConfig::eKeys::ROTATE_CLOCKP2);
 				break;
 
-				// User paused
+			// User paused
 			case GameConfig::eKeys::ESC:
 				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
 				cout << "The game has been paused, you will be moved to the main menu in 5 seconds." << endl;
@@ -230,37 +215,31 @@ void GameManager::playGame() {
 		}
 
 		// Check if leftBlock couldn't move
-		if (!leftBlockMoved) {
-			// Check if the leftBlock reached the top
-			if (this->LUser.getMovingBlock().getMovedAmount() == 0) {
-				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-				cout << "Right Player Won !" << endl << endl;
-				handleBlockNotMoved(false);
-			}
-
-			// Update the leftBlock's board and generate a new block
-			this->LUser.updateBoardAndGenerateNewBlock();
-			updateScoreTable();
-		}
+		if (!leftBlockMoved) 
+			checkUserReachedTop(this->LUser);
 
 		// Check if rightBlock couldn't move
-		if (!rightBlockMoved) {
-			// Check if the rightBlock reached the top
-			if (this->RUser.getMovingBlock().getMovedAmount() == 0) {
-				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-				cout << "Left Player Won !" << endl << endl;
-				handleBlockNotMoved(false);
-			}
+		if (!rightBlockMoved) 
+			checkUserReachedTop(this->RUser);
 
-			// Update the rightBlock's board and generate a new block
-			this->RUser.updateBoardAndGenerateNewBlock();
-			updateScoreTable();
-		}
-		
 		// Game speed
 		Sleep(800);
 	}
 }
+
+//Check if the user provided reached the top part of the board and handle as the result
+void GameManager::checkUserReachedTop(User& user) {
+	// Check if the users Block reached the top
+	if (user.getMovingBlock().getMovedAmount() == 0) {
+		gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
+		cout << ((user.getSide() == 'L') ? "Right" : "Left") << " Player Won !" << endl << endl;
+		handleBlockNotMoved(false);
+	}
+	// Update the users board and generate a new block
+	user.updateBoardAndGenerateNewBlock();
+	updateScoreTable();
+}
+
 
 // Method to handle the case when a player wins or the game is tied
 void GameManager::handleBlockNotMoved(bool isHighScore) {

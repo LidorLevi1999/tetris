@@ -18,7 +18,7 @@ public:
 
 	// Getter methods
 	int getScore() const { return this->score; };
-	int	getSide() const { return this->side; };
+	char getSide() const { return this->side; };
 	Block& getMovingBlock() { return this->movingBlock; };
 	Board getBoard() { return this->board; };
 

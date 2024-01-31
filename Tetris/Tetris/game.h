@@ -42,6 +42,9 @@ public:
 
     // Update the score table on the screen
     void updateScoreTable();
+
+    //Check if the user provided reached the top part of the board and handle as the result
+    void checkUserReachedTop(User& user);
 };
 
 #endif
