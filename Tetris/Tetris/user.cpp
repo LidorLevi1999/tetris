@@ -28,7 +28,7 @@ bool User::moveMovingBlock(GameConfig::eKeys direction) {
 	copyBlock.moveBlock(direction);
 
 	// Get the points of the moved block
-	Point* points = copyBlock.getBlockPoints();
+	const Point* points = copyBlock.getBlockPoints();
 
 	// Check if the moved block is within the game boundaries and does not collide with other blocks
 	Point p;
@@ -66,7 +66,7 @@ bool User::rotateMovingBlock(bool clockWise) {
 		copyBlock.rotateCounterClockwise();
 
 	// Get the points of the rotated block
-	Point* points = copyBlock.getBlockPoints();
+	const Point* points = copyBlock.getBlockPoints();
 	char pointSymbol;
 
 	// Check if the rotated block is within the game boundaries and does not collide with other blocks

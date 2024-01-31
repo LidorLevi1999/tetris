@@ -20,13 +20,3 @@ void clearScreen(){
 	system("cls");
 }
 
-// Function to dynamically allocate a character matrix
-char** buildCharMatrix(int rowsAndCols) {
-	char** matrix = new char* [rowsAndCols];
-	for (int i = 0; i < rowsAndCols; ++i) {
-		matrix[i] = new char[rowsAndCols];
-		for (int j = 0; j < rowsAndCols; ++j)
-			matrix[i][j] = ' ';
-	}
-	return matrix;
-}

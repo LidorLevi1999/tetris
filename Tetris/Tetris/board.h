@@ -24,7 +24,7 @@ public:
 	void drawBoard(char side);
 
 	// Updates the game board with the current block's points
-	void updateBoardWithPoints(Point* points);
+	void updateBoardWithPoints(const Point* points);
 
 	// Validates and clears full rows, updating the board and returning the score
 	int validateBoard();

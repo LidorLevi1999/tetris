@@ -58,7 +58,7 @@ void Board::drawBoard(char side) {
 }
 
 // Updates the game board with the current block's points
-void Board::updateBoardWithPoints(Point* points) {
+void Board::updateBoardWithPoints(const Point* points) {
 	int xOffset = this->side == 'L' ? 1 : GameConfig::RIVAL_POS + 1;
 	int row, col;
 	for (int i = 0; i < 4; i++) {
