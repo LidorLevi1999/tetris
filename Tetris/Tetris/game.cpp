@@ -20,6 +20,7 @@ void GameManager::setupNewGame(bool useColors) {
 	this->RUser.resetBoard();
 	this->RUser.createNewMovingBlock();
 	this->LUser.resetScore();
+	this->RUser.resetScore();
 }
 
 // Start the game and handle menu selections
@@ -228,7 +229,7 @@ void GameManager::playGame() {
 }
 
 //Check if the user provided reached the top part of the board and handle as the result
-void GameManager::checkUserReachedTop(User& user) {
+void GameManager::checkUserReachedTop (User& user) {
 	// Check if the users Block reached the top
 	if (user.getMovingBlock().getMovedAmount() == 0) {
 		gotoxy(0, GameConfig::BOARD_HEIGHT + 5);

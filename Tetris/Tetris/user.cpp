@@ -90,8 +90,13 @@ bool User::rotateMovingBlock(bool clockWise) {
 // Update the board and generate a new moving block
 void User::updateBoardAndGenerateNewBlock() {
 	// Update the board with the points of the current moving block
-	this->board.updateBoardWithPoints(this->movingBlock.getBlockPoints());
-
+	if (this->movingBlock.getIsBomb()) {
+		this->board.performBombExplosion(this->movingBlock.getBlockPoints()[0]);
+		this->board.drawBoard(this->getSide());
+	}
+	else {
+		this->board.updateBoardWithPoints(this->movingBlock.getBlockPoints());
+	}
 	// Validate the board and receive points
 	int pointsReceived = this->board.validateBoard();
 

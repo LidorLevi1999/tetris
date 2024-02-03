@@ -24,16 +24,23 @@ public:
 	void drawBoard(char side);
 
 	// Updates the game board with the current block's points
-	void updateBoardWithPoints(const Point* points);
+	void updateBoardWithPoints(const Point* const& points);
 
 	// Validates and clears full rows, updating the board and returning the score
 	int validateBoard();
 
+	void performBombExplosion(const Point& bombPosition);
 private:
 	// Checks if a given row is completely filled with blocks
 	bool isAllRowFull(int row) const;
 
 	// Clears a filled row and shifts the above rows down
 	void bombRowAndFixBoard(int row);
+	
+	//update all board points afterh the explosion
+	void updateBoardPointsAfterExplosion();
+
+	//Drop all points down;
+	void dropPointsDown(int col);
 };
 #endif

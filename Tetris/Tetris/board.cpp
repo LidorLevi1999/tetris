@@ -9,8 +9,8 @@ using namespace std;
 
 // Constructor
 Board::Board(char side) {
-	clearBoard();
 	this->side = side;
+	clearBoard();
 }
 
 // Clears the entire game board
@@ -18,6 +18,8 @@ void Board::clearBoard() {
 	for (int row = 0; row < GameConfig::BOARD_HEIGHT; row++) {
 		for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
 			this->board[col][row].setSymbol(' ');
+			this->board[col][row].setColor(GameConfig::COLORS[0]);
+			this->board[col][row].setCoordinates(col + (this->side == 'L' ? GameConfig::MIN_X : 2 * GameConfig::MIN_X) + (this->side == 'L' ? 0 : GameConfig::RIVAL_POS), row + GameConfig::MIN_Y, false);
 		}
 	}
 }
@@ -58,7 +60,7 @@ void Board::drawBoard(char side) {
 }
 
 // Updates the game board with the current block's points
-void Board::updateBoardWithPoints(const Point* points) {
+void Board::updateBoardWithPoints(const Point* const& points){
 	int xOffset = this->side == 'L' ? 1 : GameConfig::RIVAL_POS + 1;
 	int row, col;
 	for (int i = 0; i < 4; i++) {
@@ -108,5 +110,51 @@ void Board::bombRowAndFixBoard(int row) {
 	}
 	for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
 		this->board[col][0].setSymbol(' ');
+	}
+}
+
+
+void Board::performBombExplosion(const Point& bombPosition) {
+	int xOffset = this->side == 'L' ? 1 : GameConfig::RIVAL_POS + 1;
+	int yOffset = GameConfig::MIN_Y;
+	int bombBoardYPosition = bombPosition.getY() - yOffset;
+	int bombBoardXPosition = bombPosition.getX() - xOffset;
+	int startX = bombBoardXPosition - 4 < 0 ? 0 : bombBoardXPosition -4 ;
+	int endX = bombBoardXPosition + 4 >= GameConfig::BOARD_WIDTH ? GameConfig::BOARD_WIDTH : bombBoardXPosition + 4;
+	int startY = bombBoardYPosition - 4 < 0 ? 0 : bombBoardYPosition - 4;
+	int endY = (bombBoardYPosition + 4) > GameConfig::BOARD_HEIGHT - yOffset ? GameConfig::BOARD_HEIGHT - yOffset : bombBoardYPosition +  4;
+
+	for (int i = startY; i <= endY; i++) {
+		for (int j = startX; j <= endX; j++) {
+			board[j][i].setSymbol(' ');
+			board[j][i].setColor(GameConfig::COLORS[0]);
+		}
+	}
+
+	gotoxy(bombPosition.getX(), bombPosition.getY());
+	cout << " ";
+	updateBoardPointsAfterExplosion();
+}
+
+
+void Board::updateBoardPointsAfterExplosion() {
+	for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
+		dropPointsDown(col);
+	}
+}
+
+void Board::dropPointsDown(int col) {
+	for (int i = GameConfig::BOARD_HEIGHT - 1; i > 0; i--) {
+		if(this->board[col][i].getSymbol() == ' ') {
+			for (int j = i - 1; j > 0; j--) {
+				if (this->board[col][j].getSymbol() == '#') {
+					this->board[col][i].setColor(this->board[col][j].getColor());
+					this->board[col][i].setSymbol(this->board[col][j].getSymbol());
+					this->board[col][j].setColor(GameConfig::COLORS[0]);
+					this->board[col][j].setSymbol(' ');
+					break;
+				}
+			}
+		}
 	}
 }

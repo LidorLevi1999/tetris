@@ -12,10 +12,10 @@ Block::Block(char side) {
 	this->blockShape = getRandomShape();
 	this->rotateRightAmount = 0;
 	this->movedAmount = 0;
-
+	this->isBomb = this->blockShape == Block::eTetriminoShape::Bomb;
 	// Choose a random color for the block
 	int randomValue = rand() % GameConfig::NUM_OF_COLORS;
-	this->blockColor = GameConfig::COLORS[randomValue];
+	this->blockColor = this->isBomb ? GameConfig::COLORS[0] : GameConfig::COLORS[randomValue];
 
 	// Build the block points based on its shape
 	buildBlockPoints();
@@ -53,19 +53,24 @@ void Block::buildBlockPoints() {
 		this->points[0] = Point(middleX, 1, '#', this->blockColor);
 		generate3NonCenterPoints(Point(middleX - 1, 1, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor), Point(middleX + 2, 1, '#', this->blockColor));
 		break;
+	case eTetriminoShape::Bomb:
+		this->points[0].setSymbol('@')
+		generate3NonCenterPoints(Point(middleX, 2 , '@', this->blockColor), Point(middleX, 2 , '@', this->blockColor), Point(middleX, 2 , '@', this->blockColor));
+		return;
 	}
+
 }
 
 // Assuming that the points array property of the block first element is the "center" of the block
 // It assigns the values of all 3 non "center" points.
-void Block::generate3NonCenterPoints(Point p1, Point p2, Point p3) {
+void Block::generate3NonCenterPoints(const Point p1, const Point p2, const Point p3) {
 	this->points[1] = p1;
 	this->points[2] = p2;
 	this->points[3] = p3;
 }
 
 // Takes the Block (assuming only NON I or O is assigned here) and makes it a 3x3 matrix so it will be easier to rotate
-void Block::fromBlockToMatrix(char matrix[3][3]) {
+void Block::fromBlockToMatrix(char(&matrix)[3][3]) {
 	int matrixElements = this->blockShape == eTetriminoShape::I ? 3 : 4;
 
 	for (int i = 0; i < 3; ++i) {
@@ -84,7 +89,7 @@ void Block::fromBlockToMatrix(char matrix[3][3]) {
 }
 
 // Takes a 3x3 matrix after rotation and makes it a block again while changing the values as it should.
-void Block::fromMatrixToBlock(char matrix[3][3]) {
+void Block::fromMatrixToBlock(char(&matrix)[3][3]) {
 	Point center = this->points[0];
 	int pointsMoved = 0;
 	int xDiffFromCenter;
@@ -128,7 +133,10 @@ bool Block::moveBlock(GameConfig::eKeys key, bool shouldDraw) {
 // Returns a random Tetrimino shape
 Block::eTetriminoShape Block::getRandomShape() {
 
-	int randomValue = rand() % 7;
+	int randomValue = rand() % 100;
+	if (randomValue >= 0 && randomValue < 5)
+		return Block::eTetriminoShape::Bomb;
+	else randomValue = rand() % 7;
 	switch (randomValue) {
 	case 0: return Block::eTetriminoShape::O;
 	case 1: return Block::eTetriminoShape::I;
@@ -142,7 +150,7 @@ Block::eTetriminoShape Block::getRandomShape() {
 
 // Rotates all points in the block clockwise.
 void Block::rotateClockwise() {
-	if (this->blockShape == eTetriminoShape::O)
+	if (this->blockShape == eTetriminoShape::O || this->isBomb)
 		return;
 	char matrix[3][3];
 	// Call fromBlockToMatrix with the fixed-size matrix
@@ -164,7 +172,7 @@ void Block::rotateCounterClockwise() {
 }
 
 // Function to rotate the matrix 90 degrees clockwise
-void Block::rotateMatrixClockwise(char matrix[3][3]) {
+void Block::rotateMatrixClockwise(char(&matrix)[3][3]) {
 	int dimension = 3;
 	// Traverse each cycle
 	for (char i = 0; i < dimension / 2; i++) {
@@ -187,7 +195,7 @@ void Block::increaseRotateRightAmount() {
 }
 
 // Copies the properties of another block to this block
-void Block::copyBlock(Block& block) {
+void Block::copyBlock(const Block& block) {
 	for (int i = 0; i < 4; i++) {
 		this->points[i].setCoordinates(block.points[i].getX(), block.points[i].getY(), true);
 	}

@@ -8,7 +8,7 @@ class Block
 {
 public:
     // Enum representing different Tetrimino shapes
-    enum class eTetriminoShape { O, I, T, L, J, S, Z };
+    enum class eTetriminoShape { O, I, T, L, J, S, Z, Bomb };
 
 private:
 	Point points[4];
@@ -17,6 +17,7 @@ private:
 	int movedAmount;
 	eTetriminoShape blockShape;
     int blockColor;
+    bool isBomb;
 
 public:
     // Default constructor
@@ -41,7 +42,7 @@ public:
     const Point* getBlockPoints() { return this->points; }
 
     // Copy properties from another block
-    void copyBlock(Block& block);
+    void copyBlock(const Block& block);
 
     // Draw the block on the screen
     void drawBlock();
@@ -52,24 +53,24 @@ public:
     // Increase the count of moved times
     void increaseMoveAmount() { this->movedAmount++; };
 
+    //Returns if the current block is a bomb;
+    bool getIsBomb() const { return this->isBomb; };
+
 private:
     // Build the 4 points of the block based on its shape
     void buildBlockPoints();
 
     // Generate 3 non-center points for the block
-    void generate3NonCenterPoints(Point p1, Point p2, Point p3);
+    void generate3NonCenterPoints(const Point p1, const Point p2, const Point p3);
 
     // Convert the block to a 3x3 matrix for easier rotation
-    void fromBlockToMatrix(char matrix[3][3]);
+    void fromBlockToMatrix(char (&matrix)[3][3]);
 
     // Convert a 3x3 matrix after rotation back to a block
-    void fromMatrixToBlock(char matrix[3][3]);
+    void fromMatrixToBlock(char(&matrix)[3][3]);
 
     // Rotate the matrix 90 degrees clockwise
-    void rotateMatrixClockwise(char matrix[3][3]);
-
-    // Free the dynamically allocated memory for a matrix
-    void freeMatrix(char** matrix);
+    void rotateMatrixClockwise(char(&matrix)[3][3]);
 
     // Fix the position of the last point for the I Tetrimino after rotation
     void fixITetereminoLastPoint();
