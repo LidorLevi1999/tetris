@@ -54,8 +54,8 @@ void Block::buildBlockPoints() {
 		generate3NonCenterPoints(Point(middleX - 1, 1, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor), Point(middleX + 2, 1, '#', this->blockColor));
 		break;
 	case eTetriminoShape::Bomb:
-		this->points[0].setSymbol('@')
-		generate3NonCenterPoints(Point(middleX, 2 , '@', this->blockColor), Point(middleX, 2 , '@', this->blockColor), Point(middleX, 2 , '@', this->blockColor));
+		this->points[0].setSymbol('@');
+		generate3NonCenterPoints(Point(middleX, 2, '@', this->blockColor), Point(middleX, 2, '@', this->blockColor), Point(middleX, 2, '@', this->blockColor));
 		return;
 	}
 
@@ -132,18 +132,17 @@ bool Block::moveBlock(GameConfig::eKeys key, bool shouldDraw) {
 
 // Returns a random Tetrimino shape
 Block::eTetriminoShape Block::getRandomShape() {
-
 	int randomValue = rand() % 100;
 	if (randomValue >= 0 && randomValue < 5)
 		return Block::eTetriminoShape::Bomb;
 	else randomValue = rand() % 7;
-	switch (randomValue) {
-	case 0: return Block::eTetriminoShape::O;
-	case 1: return Block::eTetriminoShape::I;
-	case 2: return Block::eTetriminoShape::T;
-	case 3: return Block::eTetriminoShape::L;
-	case 4: return Block::eTetriminoShape::J;
-	case 5: return Block::eTetriminoShape::S;
+	switch ((GameConfig::eKeys)randomValue) {
+	case GameConfig::eKeys::ShapeO: return Block::eTetriminoShape::O;
+	case GameConfig::eKeys::ShapeI: return Block::eTetriminoShape::I;
+	case GameConfig::eKeys::ShapeT: return Block::eTetriminoShape::T;
+	case GameConfig::eKeys::ShapeL: return Block::eTetriminoShape::L;
+	case GameConfig::eKeys::ShapeJ: return Block::eTetriminoShape::J;
+	case GameConfig::eKeys::ShapeS: return Block::eTetriminoShape::S;
 	default: return Block::eTetriminoShape::Z;
 	}
 }

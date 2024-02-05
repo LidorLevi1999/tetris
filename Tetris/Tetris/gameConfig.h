@@ -5,17 +5,41 @@
 class GameConfig
 {
 public:
-	enum class eKeys {
-	// Left player controls
-    LEFTP1 = 'a', RIGHTP1 = 'd',
-    DROPP1 = 'x', ROTATE_CLOCKP1 = 's', ROTATE_COUNTERP1 = 'w',
+    enum class eKeys {
+        // Left player controls
+        LEFTP1 = 'a', RIGHTP1 = 'd',
+        DROPP1 = 'x', ROTATE_CLOCKP1 = 's', ROTATE_COUNTERP1 = 'w',
 
-    // Right player controls
-    LEFTP2 = 'j', RIGHTP2 = 'l',
-    DROPP2 = 'm', ROTATE_CLOCKP2 = 'k', ROTATE_COUNTERP2 = 'i',
+        // Right player controls
+        LEFTP2 = 'j', RIGHTP2 = 'l',
+        DROPP2 = 'm', ROTATE_CLOCKP2 = 'k', ROTATE_COUNTERP2 = 'i',
 
-    ESC = 27  // Escape key for pausing the game
-	};
+        ESC = 27,  // Escape key for pausing the game
+
+        // Menu Selection
+        HumanVsHuman = 1,
+        HumanVsComputer = 2,
+        ComputerVsComputer = 3,
+        ContinuePausedGame = 4,
+        HumanVsHumanColors = 5,
+        HumanVsComputerColors = 6,
+        ComputerVsComputerColors = 7,
+        Instructions = 8,
+        Quit = 9,
+
+        // Shapes
+        ShapeO = 0,
+        ShapeI = 1,
+        ShapeT = 2,
+        ShapeL = 3,
+        ShapeJ = 4,
+        ShapeS = 5
+        // ShapeZ = 6 (currently as default)
+
+        // Symbols
+        //ShapeSymbol = #,
+        //BombSymbol = @
+    };
 
 	// Board dimensions
 	static constexpr int BOARD_HEIGHT = 18;

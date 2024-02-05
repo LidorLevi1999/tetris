@@ -11,10 +11,11 @@ class GameManager
 	User RUser;
 	bool isGameRunning;
 	bool isGameSupportColors;
+    int option;
 
 public:
     // Constructor
-    GameManager() : LUser('L'), RUser('R'), isGameRunning(false), isGameSupportColors(false) {};
+    GameManager() : LUser('L'), RUser('R'), isGameRunning(false), isGameSupportColors(false), option((int)GameConfig::eKeys::HumanVsHuman) {};
 
     // Method to set up a new game
     void setupNewGame(bool useColors);
@@ -44,7 +45,7 @@ public:
     void updateScoreTable();
 
     //Check if the user provided reached the top part of the board and handle as the result
-    void checkUserReachedTop (User& user);
+    void checkUserReachedTop(User& user);
 };
 
 #endif

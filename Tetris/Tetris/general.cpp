@@ -2,13 +2,13 @@
 #include <windows.h>
 #include <process.h>
 #include <iostream>
-using namespace std;
+
 
 // Function to set the console cursor position
 void gotoxy(int x, int y){
 	HANDLE hConsoleOutput;
 	COORD dwCursorPosition;
-	cout.flush();
+	std::cout.flush();
 	dwCursorPosition.X = x;
 	dwCursorPosition.Y = y;
 	hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);

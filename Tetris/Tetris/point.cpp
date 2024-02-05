@@ -4,7 +4,6 @@
 #include "general.h"
 #include <iostream>
 #include <Windows.h>
-using namespace std;
 
 // Constructor
 Point::Point(int x, int y, char symbol, int color) {
@@ -33,7 +32,7 @@ void Point::setCoordinates(int x, int y, bool shouldDraw) {
 void Point::draw() {
 	gotoxy(this->x + GameConfig::MIN_X - 1, this->y + GameConfig::MIN_Y - 1);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), this->color);
-	cout << this->symbol;
+	std::cout << this->symbol;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
 }
 
@@ -42,7 +41,7 @@ void Point::draw(char symbol)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
 	gotoxy(this->x + GameConfig::MIN_X - 1, this->y + GameConfig::MIN_Y - 1);
-	cout << symbol;
+	std::cout << symbol;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
 }
 

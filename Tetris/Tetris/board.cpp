@@ -5,8 +5,6 @@
 #include <iostream>
 #include <Windows.h>
 
-using namespace std;
-
 // Constructor
 Board::Board(char side) {
 	this->side = side;
@@ -33,27 +31,27 @@ void Board::drawBoard(char side) {
 	// Print the top border
 	gotoxy(startX, startY++);
 	for (int i = 0; i < GameConfig::BOARD_WIDTH + 2; i++) {
-		cout << "-";
+		std::cout << "-";
 	}
 
 	// Print the board content
 	gotoxy(startX, startY);
 	for (int row = 0; row <= GameConfig::BOARD_HEIGHT - 1; row++) {
-		cout << "|";  // Print the leftmost vertical bar
+		std::cout << "|";  // Print the leftmost vertical bar
 		for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
 			char symbol = this->board[col][row].getSymbol();
 			if (symbol == '#')
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), this->board[col][row].getColor());
-			cout << symbol;
+			std::cout << symbol;
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
 		}
-		cout << '|';  // Print the rightmost vertical bar for the last column
+		std::cout << '|';  // Print the rightmost vertical bar for the last column
 		gotoxy(startX, startY + row + 1);
 	}
 
 	// Print the bottom border
 	for (int i = 0; i < GameConfig::BOARD_WIDTH + 2; i++) {
-		cout << "-";
+		std::cout << "-";
 	}
 
 	this->side = side;
@@ -120,9 +118,9 @@ void Board::performBombExplosion(const Point& bombPosition) {
 	int bombBoardYPosition = bombPosition.getY() - yOffset;
 	int bombBoardXPosition = bombPosition.getX() - xOffset;
 	int startX = bombBoardXPosition - 4 < 0 ? 0 : bombBoardXPosition -4 ;
-	int endX = bombBoardXPosition + 4 >= GameConfig::BOARD_WIDTH ? GameConfig::BOARD_WIDTH : bombBoardXPosition + 4;
+	int endX = bombBoardXPosition + 4 >= GameConfig::BOARD_WIDTH ? GameConfig::BOARD_WIDTH - 1 : bombBoardXPosition + 4;
 	int startY = bombBoardYPosition - 4 < 0 ? 0 : bombBoardYPosition - 4;
-	int endY = (bombBoardYPosition + 4) > GameConfig::BOARD_HEIGHT - yOffset ? GameConfig::BOARD_HEIGHT - yOffset : bombBoardYPosition +  4;
+	int endY = (bombBoardYPosition + 4) > GameConfig::BOARD_HEIGHT - yOffset ? GameConfig::BOARD_HEIGHT - yOffset : bombBoardYPosition + 4;
 
 	for (int i = startY; i <= endY; i++) {
 		for (int j = startX; j <= endX; j++) {
@@ -132,7 +130,7 @@ void Board::performBombExplosion(const Point& bombPosition) {
 	}
 
 	gotoxy(bombPosition.getX(), bombPosition.getY());
-	cout << " ";
+	std::cout << " ";
 	updateBoardPointsAfterExplosion();
 }
 

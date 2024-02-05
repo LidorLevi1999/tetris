@@ -8,7 +8,6 @@
 #include "user.h"
 #include "general.h"
 #include "gameConfig.h"
-using namespace std;
 
 // Method to set up a new game
 void GameManager::setupNewGame(bool useColors) {
@@ -28,20 +27,32 @@ void GameManager::startGame() {
 	int menuSelection = 0;
 	while (menuSelection != 9) {
 		menuSelection = showMenu();
-		switch (menuSelection) {
-		case 1:
-			setupNewGame(false);  // Start a new game without colors
+		switch ((GameConfig::eKeys)menuSelection) {
+		// Start a new game without colors
+		case GameConfig::eKeys::HumanVsHuman:
+		case GameConfig::eKeys::HumanVsComputer:
+		case GameConfig::eKeys::ComputerVsComputer:
+			option = menuSelection % 4;
+			setupNewGame(false);  
 			playGame();
 			break;
-		case 2:
+
+		// Continue a paused game
+		case GameConfig::eKeys::ContinuePausedGame:
 			clearScreen();
-			playGame();  // Continue a paused game
-			break;
-		case 4:
-			setupNewGame(true);  // Start a new game with colors
 			playGame();
 			break;
-		case 9:
+
+		// Start a new game with colors
+		case GameConfig::eKeys::HumanVsHumanColors:
+		case GameConfig::eKeys::HumanVsComputerColors:
+		case GameConfig::eKeys::ComputerVsComputerColors:
+			option = menuSelection % 4;
+			setupNewGame(true);  
+			playGame();
+			break;
+
+		case GameConfig::eKeys::Quit:
 			return;
 		}
 	}
@@ -51,58 +62,75 @@ void GameManager::startGame() {
 int GameManager::showMenu() {
 	while (true) {
 		clearScreen();
-		cout << "Please select one of the following options in order to continue:" << endl;
-		cout << "(1) Start a new game - without colors" << endl;
+		std::cout << "Please select one of the following options in order to continue:" << std::endl << std::endl;
+		std::cout << "Game without colors:" << std::endl;
+		std::cout << "(1) Start a new game - Human vs Human" << std::endl;
+		std::cout << "(2) Start a new game - Human vs Computer" << std::endl;
+		std::cout << "(3) Start a new game - Computer vs Computer" << std::endl << std::endl;
 
 		// Display option to continue a paused game only if the game is already running
 		if (this->isGameRunning)
-			cout << "(2) Continue a paused game" << endl;
+			std::cout << "(4) Continue a paused game" << std::endl << std::endl;
 
-		cout << "(4) Start a new game - with colors" << endl;
-		cout << "(8) Present instructions and keys" << endl;
-		cout << "(9) EXIT" << endl << endl;
+		std::cout << "Game with colors:" << std::endl;
+		std::cout << "(5) Start a new colored game - Human vs Human" << std::endl;
+		std::cout << "(6) Start a new colored game - Human vs Computer" << std::endl;
+		std::cout << "(7) Start a new colored game - Computer vs Computer" << std::endl << std::endl;
+
+		//std::cout << "(4) Start a new game - with colors" << std::endl;
+		std::cout << "(8) Present instructions and keys" << std::endl;
+		std::cout << "(9) EXIT" << std::endl << std::endl;
 
 		// Reminder for playing
-		cout << "Please switch your keyboard to English to play the game." << endl;
-		cout << "If needed, press Alt + Shift simultaneously to change the language." << endl << endl;
+		std::cout << "Please switch your keyboard to English to play the game." << std::endl;
+		std::cout << "If needed, press Alt + Shift simultaneously to change the language." << std::endl << std::endl;
 
-		char pressedChar = _getch();
-
-		switch ((int)pressedChar) {
-		case '1':
+		int selectedOption = _getch() - '0';
+		
+		switch ((GameConfig::eKeys)selectedOption) {
+		case GameConfig::eKeys::HumanVsHuman:
+		case GameConfig::eKeys::HumanVsComputer:
+		case GameConfig::eKeys::ComputerVsComputer:
 			clearScreen();
-			cout << "A new game will start in 3 seconds.." << endl;
+			std::cout << "A new game will start in 3 seconds.." << std::endl;
 			Sleep(3000);
-			return 1;
-		case '2':
+			return selectedOption;
+		case GameConfig::eKeys::ContinuePausedGame:
 			if (this->isGameRunning) {
 				clearScreen();
-				cout << "The game will resume in 3 seconds.." << endl;
+				std::cout << "The game will resume in 3 seconds.." << std::endl;
 				Sleep(3000);
-				return 2;
+				return selectedOption; // SHOULD BE CHANGED TO 4
 			}
 			else {
-				cout << "Invalid selection. Please try again." << endl;
+				std::cout << "Invalid selection. Please try again." << std::endl;
 				Sleep(400);
 				break;
 			}
-		case '4': 
+		/*case '4': 
 			clearScreen();
-			cout << "A new game with colors will start in 3 seconds.." << endl;
+			std::cout << "A new game with colors will start in 3 seconds.." << std::endl;
 			Sleep(3000);
-			return 4;
-		case '8':
+			return 4;*/
+		case GameConfig::eKeys::HumanVsHumanColors:
+		case GameConfig::eKeys::HumanVsComputerColors:
+		case GameConfig::eKeys::ComputerVsComputerColors:
+			clearScreen();
+			std::cout << "A new colored game will start in 3 seconds.." << std::endl;
+			Sleep(3000);
+			return selectedOption;
+		case GameConfig::eKeys::Instructions:
 			clearScreen();
 			showInstructions();
 			Sleep(750);
 			break;
-		case '9':
+		case GameConfig::eKeys::Quit:
 			clearScreen();
-			cout << "The game will exit in 3 seconds.." << endl;
+			std::cout << "The game will exit in 3 seconds.." << std::endl;
 			Sleep(3000);
 			return 9;
 		default:
-			cout << "Invalid selection. Please try again." << endl;
+			std::cout << "Invalid selection. Please try again." << std::endl;
 			Sleep(400);
 			break;
 		}
@@ -112,35 +140,35 @@ int GameManager::showMenu() {
 // Display game instructions
 void GameManager::showInstructions() {
 	// Brief explanation of Tetris
-	cout << "Hello and welcome to Lidor & Bar Tetris game!" << endl;
-	cout << "Tetris is a puzzle game where you must fit falling blocks into a line at the bottom of the playing board." << endl;
-	cout << "Completing a line clears it and earns points, the game ends when the blocks reach the top of the board." << endl << endl;
+	std::cout << "Hello and welcome to Lidor & Bar Tetris game!" << std::endl;
+	std::cout << "Tetris is a puzzle game where you must fit falling blocks into a line at the bottom of the playing board." << std::endl;
+	std::cout << "Completing a line clears it and earns points, the game ends when the blocks reach the top of the board." << std::endl << std::endl;
 
 	// Instructions for the game controls
-	cout << "Here are the controls for the game:" << endl << endl;
+	std::cout << "Here are the controls for the game:" << std::endl << std::endl;
 
 	// Instructions for the left player
-	cout << "Left Player Controls:" << endl;
-	cout << "Move Left: Press 'a' or 'A'" << endl;
-	cout << "Move Right: Press 'd' or 'D'" << endl;
-	cout << "Rotate Clockwise: Press 's' or 'S'" << endl;
-	cout << "Rotate Counterclockwise: Press 'w' or 'W'" << endl;
-	cout << "Drop: Press 'x' or 'X'" << endl << endl;
+	std::cout << "Left Player Human Controls:" << std::endl;
+	std::cout << "Move Left: Press 'a' or 'A'" << std::endl;
+	std::cout << "Move Right: Press 'd' or 'D'" << std::endl;
+	std::cout << "Rotate Clockwise: Press 's' or 'S'" << std::endl;
+	std::cout << "Rotate Counterclockwise: Press 'w' or 'W'" << std::endl;
+	std::cout << "Drop: Press 'x' or 'X'" << std::endl << std::endl;
 
 	// Instructions for the right player
-	cout << "Right Player Controls:" << endl;
-	cout << "Move Left: Press 'j' or 'J'" << endl;
-	cout << "Move Right: Press 'l' or 'L'" << endl;
-	cout << "Rotate Clockwise: Press 'k' or 'K'" << endl;
-	cout << "Rotate Counterclockwise: Press 'i' or 'I'" << endl;
-	cout << "Drop: Press 'm' or 'M'" << endl << endl;
+	std::cout << "Right Player Human Controls:" << std::endl;
+	std::cout << "Move Left: Press 'j' or 'J'" << std::endl;
+	std::cout << "Move Right: Press 'l' or 'L'" << std::endl;
+	std::cout << "Rotate Clockwise: Press 'k' or 'K'" << std::endl;
+	std::cout << "Rotate Counterclockwise: Press 'i' or 'I'" << std::endl;
+	std::cout << "Drop: Press 'm' or 'M'" << std::endl << std::endl;
 
 	// Reminder for playing
-	cout << "Switch your keyboard to English to play." << endl;
-	cout << "If needed, press Alt + Shift simultaneously to change the language." << endl << endl;
+	std::cout << "Switch your keyboard to English to play." << std::endl;
+	std::cout << "If needed, press Alt + Shift simultaneously to change the language." << std::endl << std::endl;
 
 	// Instruction how to return to main menu
-	cout << "Press ESC key to return." << endl << endl;
+	std::cout << "Press ESC key to return." << std::endl << std::endl;
 
 	// Wait for user input to return to the main menu
 	while (true) {
@@ -149,7 +177,7 @@ void GameManager::showInstructions() {
 				return;
 			else
 			{
-				cout << "Invalid selection. Please try again." << endl;
+				std::cout << "Invalid selection. Please try again." << std::endl;
 				Sleep(500);
 			}
 		}
@@ -194,8 +222,8 @@ void GameManager::playGame() {
 			// User paused
 			case GameConfig::eKeys::ESC:
 				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-				cout << "The game has been paused, you will be moved to the main menu in 5 seconds." << endl;
-				cout << "Please note that you can resume the game by pressing (2) in the main menu." << endl;
+				std::cout << "The game has been paused, you will be moved to the main menu in 5 seconds." << std::endl;
+				std::cout << "Please note that you can resume the game by pressing (2) in the main menu." << std::endl;
 				Sleep(5000);
 				return;
 			}
@@ -233,7 +261,7 @@ void GameManager::checkUserReachedTop (User& user) {
 	// Check if the users Block reached the top
 	if (user.getMovingBlock().getMovedAmount() == 0) {
 		gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
-		cout << ((user.getSide() == 'L') ? "Right" : "Left") << " Player Won !" << endl << endl;
+		std::cout << ((user.getSide() == 'L') ? "Right" : "Left") << " Player Won !" << std::endl << std::endl;
 		handleBlockNotMoved(false);
 	}
 	// Update the users board and generate a new block
@@ -247,14 +275,14 @@ void GameManager::handleBlockNotMoved(bool isHighScore) {
 	// Determine the winner or tie based on scores
 	if (isHighScore) {
 		if (this->LUser.getScore() > this->RUser.getScore())
-			cout << "Left player Won due to Higher score !!" << endl;
+			std::cout << "Left player Won due to Higher score !!" << std::endl;
 		else if (this->RUser.getScore() > this->LUser.getScore())
-			cout << "Right player Won due to Higher score !!" << endl;
+			std::cout << "Right player Won due to Higher score !!" << std::endl;
 		else
-			cout << "This is a TIE !!" << endl;
+			std::cout << "This is a TIE !!" << std::endl;
 	}
 
-	cout << "Press any key to return to main menu" << endl;
+	std::cout << "Press any key to return to main menu" << std::endl;
 
 	// Wait for user input
 	while (true) {
@@ -280,20 +308,20 @@ void GameManager::drawScore()
 {
 	//Players score
 	gotoxy(GameConfig::BOARD_WIDTH + 5, GameConfig::MIN_Y - 1);
-	cout << "P1";
+	std::cout << "P1";
 	gotoxy(GameConfig::BOARD_WIDTH + 5, GameConfig::MIN_Y);
-	cout << "Score:";
+	std::cout << "Score:";
 	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y - 1);
-	cout << "P2";
+	std::cout << "P2";
 	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y);
-	cout << "Score:";
+	std::cout << "Score:";
 	updateScoreTable();
 }
 
 // Update the score table on the screen
 void GameManager::updateScoreTable() {
 	gotoxy(GameConfig::BOARD_WIDTH + 5, GameConfig::MIN_Y + 1);
-	cout << this->LUser.getScore();
+	std::cout << this->LUser.getScore();
 	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y + 1);
-	cout << this->RUser.getScore();
+	std::cout << this->RUser.getScore();
 }
