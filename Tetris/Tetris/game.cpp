@@ -8,18 +8,38 @@
 #include "user.h"
 #include "general.h"
 #include "gameConfig.h"
-
+#include "humanUser.h"
+#include "computerUser.h"
 // Method to set up a new game
 void GameManager::setupNewGame(bool useColors) {
 	clearScreen();
 	this->isGameRunning = true;
 	GameConfig::setColorSupport(useColors);
-	this->LUser.resetBoard();
-	this->LUser.createNewMovingBlock();
-	this->RUser.resetBoard();
-	this->RUser.createNewMovingBlock();
-	this->LUser.resetScore();
-	this->RUser.resetScore();
+	setUpUsers();
+}
+
+void GameManager::setUpUsers() {
+	switch ((GameConfig::eKeys)this->option) {
+	case GameConfig::eKeys::HumanVsHuman:
+		this->LUser = new HumanUser('L');
+		this->RUser = new HumanUser('R');
+		break;
+	case GameConfig::eKeys::HumanVsComputer:
+		this->LUser = new HumanUser('L');
+		this->RUser = new ComputerUser('R');
+		break;
+	case GameConfig::eKeys::ComputerVsComputer:
+		this->LUser = new ComputerUser('L');
+		this->RUser = new ComputerUser('R');
+		break;
+	}
+	this->LUser->resetBoard();
+	this->LUser->createNewMovingBlock();
+	this->LUser->resetScore();
+	this->RUser->resetBoard();
+	this->RUser->createNewMovingBlock();
+	this->RUser->resetScore();
+
 }
 
 // Start the game and handle menu selections
@@ -32,7 +52,7 @@ void GameManager::startGame() {
 		case GameConfig::eKeys::HumanVsHuman:
 		case GameConfig::eKeys::HumanVsComputer:
 		case GameConfig::eKeys::ComputerVsComputer:
-			option = menuSelection % 4;
+			this->option = menuSelection % 4;
 			setupNewGame(false);  
 			playGame();
 			break;
@@ -47,7 +67,7 @@ void GameManager::startGame() {
 		case GameConfig::eKeys::HumanVsHumanColors:
 		case GameConfig::eKeys::HumanVsComputerColors:
 		case GameConfig::eKeys::ComputerVsComputerColors:
-			option = menuSelection % 4;
+			this->option = menuSelection % 4;
 			setupNewGame(true);  
 			playGame();
 			break;
@@ -201,22 +221,22 @@ void GameManager::playGame() {
 			case GameConfig::eKeys::LEFTP1:
 			case GameConfig::eKeys::RIGHTP1:
 			case GameConfig::eKeys::DROPP1:
-				this->LUser.moveMovingBlock((GameConfig::eKeys)pressedChar);
+				this->LUser->moveMovingBlock((GameConfig::eKeys)pressedChar);
 				break;
 			case GameConfig::eKeys::ROTATE_CLOCKP1:
 			case GameConfig::eKeys::ROTATE_COUNTERP1:
-				this->LUser.rotateMovingBlock((GameConfig::eKeys)pressedChar == GameConfig::eKeys::ROTATE_CLOCKP1);
+				this->LUser->rotateMovingBlock((GameConfig::eKeys)pressedChar == GameConfig::eKeys::ROTATE_CLOCKP1);
 				break;
 
 			// Right player controls
 			case GameConfig::eKeys::LEFTP2:
 			case GameConfig::eKeys::RIGHTP2:
 			case GameConfig::eKeys::DROPP2:
-				this->RUser.moveMovingBlock((GameConfig::eKeys)pressedChar);
+				this->RUser->moveMovingBlock((GameConfig::eKeys)pressedChar);
 				break;
 			case GameConfig::eKeys::ROTATE_CLOCKP2:
 			case GameConfig::eKeys::ROTATE_COUNTERP2:
-				this->RUser.rotateMovingBlock((GameConfig::eKeys)pressedChar == GameConfig::eKeys::ROTATE_CLOCKP2);
+				this->RUser->rotateMovingBlock((GameConfig::eKeys)pressedChar == GameConfig::eKeys::ROTATE_CLOCKP2);
 				break;
 
 			// User paused
@@ -230,13 +250,13 @@ void GameManager::playGame() {
 		}
 
 		// Move the blocks down and check if they couldn't move
-		leftBlockMoved = this->LUser.moveMovingBlock(GameConfig::eKeys::DROPP1);
-		rightBlockMoved = this->RUser.moveMovingBlock(GameConfig::eKeys::DROPP2);
+		leftBlockMoved = this->LUser->moveMovingBlock(GameConfig::eKeys::DROPP1);
+		rightBlockMoved = this->RUser->moveMovingBlock(GameConfig::eKeys::DROPP2);
 
 		// Check if neither leftBlock nor rightBlock could move
 		if (!leftBlockMoved && !rightBlockMoved) {
 			// Check if either block reached the top, signaling the end of the game
-			if (this->LUser.getMovingBlock().getMovedAmount() == 0 || this->RUser.getMovingBlock().getMovedAmount() == 0) {
+			if (this->LUser->getMovingBlock().getMovedAmount() == 0 || this->RUser->getMovingBlock().getMovedAmount() == 0) {
 				updateScoreTable();
 				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
 				handleBlockNotMoved(true);
@@ -245,11 +265,11 @@ void GameManager::playGame() {
 
 		// Check if leftBlock couldn't move
 		if (!leftBlockMoved) 
-			checkUserReachedTop(this->LUser);
+			checkUserReachedTop(*this->LUser);
 
 		// Check if rightBlock couldn't move
 		if (!rightBlockMoved) 
-			checkUserReachedTop(this->RUser);
+			checkUserReachedTop(*this->RUser);
 
 		// Game speed
 		Sleep(800);
@@ -274,9 +294,9 @@ void GameManager::checkUserReachedTop (User& user) {
 void GameManager::handleBlockNotMoved(bool isHighScore) {
 	// Determine the winner or tie based on scores
 	if (isHighScore) {
-		if (this->LUser.getScore() > this->RUser.getScore())
+		if (this->LUser->getScore() > this->RUser->getScore())
 			std::cout << "Left player Won due to Higher score !!" << std::endl;
-		else if (this->RUser.getScore() > this->LUser.getScore())
+		else if (this->RUser->getScore() > this->LUser->getScore())
 			std::cout << "Right player Won due to Higher score !!" << std::endl;
 		else
 			std::cout << "This is a TIE !!" << std::endl;
@@ -296,10 +316,10 @@ void GameManager::handleBlockNotMoved(bool isHighScore) {
 
 // Draw the game boards and moving blocks
 void GameManager::drawBoards() {
-	this->LUser.getBoard().drawBoard('L');
-	this->RUser.getBoard().drawBoard('R');
-	this->LUser.getMovingBlock().drawBlock();
-	this->RUser.getMovingBlock().drawBlock();
+	this->LUser->getBoard().drawBoard('L');
+	this->RUser->getBoard().drawBoard('R');
+	this->LUser->getMovingBlock().drawBlock();
+	this->RUser->getMovingBlock().drawBlock();
 	drawScore();
 }
 
@@ -321,7 +341,7 @@ void GameManager::drawScore()
 // Update the score table on the screen
 void GameManager::updateScoreTable() {
 	gotoxy(GameConfig::BOARD_WIDTH + 5, GameConfig::MIN_Y + 1);
-	std::cout << this->LUser.getScore();
+	std::cout << this->LUser->getScore();
 	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y + 1);
-	std::cout << this->RUser.getScore();
+	std::cout << this->RUser->getScore();
 }

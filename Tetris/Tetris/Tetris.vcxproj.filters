@@ -39,6 +39,12 @@
     <ClCompile Include="user.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="humanUser.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="computerUser.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="point.h">
@@ -60,6 +66,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="user.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="humanUser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="computerUser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

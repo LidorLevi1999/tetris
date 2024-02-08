@@ -7,15 +7,17 @@
 
 class GameManager 
 {
-	User LUser;
-	User RUser;
+	User* LUser;
+	User* RUser;
 	bool isGameRunning;
 	bool isGameSupportColors;
     int option;
 
+private: 
+    void setUpUsers();
 public:
     // Constructor
-    GameManager() : LUser('L'), RUser('R'), isGameRunning(false), isGameSupportColors(false), option((int)GameConfig::eKeys::HumanVsHuman) {};
+    GameManager() : LUser(nullptr), RUser(nullptr), isGameRunning(false), isGameSupportColors(false), option((int)GameConfig::eKeys::HumanVsHuman) {};
 
     // Method to set up a new game
     void setupNewGame(bool useColors);

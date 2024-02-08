@@ -184,9 +184,11 @@
   <ItemGroup>
     <ClCompile Include="block.cpp" />
     <ClCompile Include="board.cpp" />
+    <ClCompile Include="computerUser.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameConfig.cpp" />
     <ClCompile Include="general.cpp" />
+    <ClCompile Include="humanUser.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="user.cpp" />
@@ -194,9 +196,11 @@
   <ItemGroup>
     <ClInclude Include="block.h" />
     <ClInclude Include="board.h" />
+    <ClInclude Include="computerUser.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameConfig.h" />
     <ClInclude Include="general.h" />
+    <ClInclude Include="humanUser.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="user.h" />
   </ItemGroup>

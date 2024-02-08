@@ -21,7 +21,7 @@ Block::Block(char side) {
 	buildBlockPoints();
 }
 
-// Build the 4 points of the block.
+// Build the 4 points of the block.//
 // Assume that a block is being created only at the middle top of the board.
 void Block::buildBlockPoints() {
 	int middleX = (GameConfig::BOARD_WIDTH + 1) / 2;
