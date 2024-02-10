@@ -13,6 +13,7 @@ class User
 protected:
 	Block movingBlock;
 	Board board;
+	bool checkCopiedBlockCollisionWithBoard(Block& copiedBlock);
 public:
 	// Constructor
 	User(char side);
@@ -30,13 +31,15 @@ public:
 	void updateBoardAndGenerateNewBlock();
 
 	// Create a new moving block for the user
-	void createNewMovingBlock();
+	virtual void createNewMovingBlock();
+
+	virtual void handleMovement(GameConfig::eKeys direction = GameConfig::eKeys::NONE) = 0;
 
 	// Move the current moving block based on user input
-	virtual bool moveMovingBlock(GameConfig::eKeys direction) = 0;
+	bool moveMovingBlock(GameConfig::eKeys direction);
 
 	// Rotate the current moving block
-	virtual bool rotateMovingBlock(bool clockWise = true) = 0;
+	bool rotateMovingBlock(bool clockWise = true);
 
 	void increaseScore(int scoreReceived) { this->score += scoreReceived; };
 	void resetScore() { this->score = 0; };

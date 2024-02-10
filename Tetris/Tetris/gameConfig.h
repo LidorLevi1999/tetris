@@ -15,6 +15,7 @@ public:
         DROPP2 = 'm', ROTATE_CLOCKP2 = 'k', ROTATE_COUNTERP2 = 'i',
 
         ESC = 27,  // Escape key for pausing the game
+        NONE = 9999,
 
         // Menu Selection
         HumanVsHuman = 1,

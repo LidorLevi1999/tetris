@@ -10,6 +10,8 @@
 #include "gameConfig.h"
 #include "humanUser.h"
 #include "computerUser.h"
+#include <typeinfo>
+
 // Method to set up a new game
 void GameManager::setupNewGame(bool useColors) {
 	clearScreen();
@@ -209,44 +211,30 @@ void GameManager::showInstructions() {
 void GameManager::playGame() {
 	drawBoards();
 	bool leftBlockMoved , rightBlockMoved = false;
-
 	while (this->isGameRunning) {
 		if (_kbhit()) {
 			char pressedChar = _getch();
 			pressedChar = tolower(pressedChar);
 			leftBlockMoved = rightBlockMoved = false;
-
-			switch ((GameConfig::eKeys)pressedChar) {
-			// Left player controls
-			case GameConfig::eKeys::LEFTP1:
-			case GameConfig::eKeys::RIGHTP1:
-			case GameConfig::eKeys::DROPP1:
-				this->LUser->moveMovingBlock((GameConfig::eKeys)pressedChar);
-				break;
-			case GameConfig::eKeys::ROTATE_CLOCKP1:
-			case GameConfig::eKeys::ROTATE_COUNTERP1:
-				this->LUser->rotateMovingBlock((GameConfig::eKeys)pressedChar == GameConfig::eKeys::ROTATE_CLOCKP1);
-				break;
-
-			// Right player controls
-			case GameConfig::eKeys::LEFTP2:
-			case GameConfig::eKeys::RIGHTP2:
-			case GameConfig::eKeys::DROPP2:
-				this->RUser->moveMovingBlock((GameConfig::eKeys)pressedChar);
-				break;
-			case GameConfig::eKeys::ROTATE_CLOCKP2:
-			case GameConfig::eKeys::ROTATE_COUNTERP2:
-				this->RUser->rotateMovingBlock((GameConfig::eKeys)pressedChar == GameConfig::eKeys::ROTATE_CLOCKP2);
-				break;
-
-			// User paused
-			case GameConfig::eKeys::ESC:
+			if ((GameConfig::eKeys)pressedChar == GameConfig::eKeys::ESC) {
 				gotoxy(0, GameConfig::BOARD_HEIGHT + 5);
 				std::cout << "The game has been paused, you will be moved to the main menu in 5 seconds." << std::endl;
 				std::cout << "Please note that you can resume the game by pressing (2) in the main menu." << std::endl;
 				Sleep(5000);
 				return;
 			}
+			if (typeid(*LUser) == typeid(HumanUser)) {
+				this->LUser->handleMovement((GameConfig::eKeys)pressedChar);
+			}
+			if (typeid(*RUser) == typeid(HumanUser)) {
+				this->RUser->handleMovement((GameConfig::eKeys)pressedChar);
+			}
+		}
+		if (typeid(*LUser) == typeid(ComputerUser)) {
+			this->LUser->handleMovement();
+		}
+		if (typeid(*RUser) == typeid(ComputerUser)) {
+			this->RUser->handleMovement();
 		}
 
 		// Move the blocks down and check if they couldn't move
@@ -272,7 +260,7 @@ void GameManager::playGame() {
 			checkUserReachedTop(*this->RUser);
 
 		// Game speed
-		Sleep(800);
+		Sleep(600);
 	}
 }
 

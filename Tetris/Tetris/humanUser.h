@@ -10,13 +10,9 @@ class HumanUser : public User
 
 public:
 	// Constructor
-	HumanUser(char side) : User(side) {};
+	HumanUser(char side) : User(side) { createNewMovingBlock(); };
 
-	// Move the current moving block based on user input
-	virtual bool moveMovingBlock(GameConfig::eKeys direction);
-
-	// Rotate the current moving block
-	virtual bool rotateMovingBlock(bool clockWise = true);
+	virtual void handleMovement(GameConfig::eKeys direction = GameConfig::eKeys::NONE);
 
 };
 

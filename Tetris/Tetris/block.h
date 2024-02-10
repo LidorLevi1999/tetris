@@ -39,7 +39,7 @@ public:
     char getSide() const { return this->side; };
 
     // Get the points of the block
-    const Point* getBlockPoints() { return this->points; }
+    const Point* getBlockPoints() const { return this->points; }
 
     // Copy properties from another block
     void copyBlock(const Block& block);
