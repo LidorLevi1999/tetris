@@ -21,6 +21,11 @@ private:
 	std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> findAllPossibleMovements();
 	void exploreAllPossibleMoves(Block& block, std::vector<GameConfig::eKeys>& moves, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allMoves);
 	std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allBestScoreMovement(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements);
+	std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allMostPointsDownMovements(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements);
+	std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allLeastPointsUpMovments(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements);
+	int getLowestY(const Block& b);
+	int getHighestY(const Block& b);
+	int getAmountOfPointsAtY(Board& b,const int y);
 public:
 	// Constructor
 	ComputerUser(char side) :

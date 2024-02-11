@@ -7,7 +7,14 @@
 #include <random>
 
 void ComputerUser::handleMovement(GameConfig::eKeys direction) {
-
+    GameConfig::eKeys movment = *(bestMovement.begin());
+    if (movment == rotateClockwise)
+        this->rotateMovingBlock();
+    else if (movment == rotateCounterClockwise)
+        this->rotateMovingBlock(false);
+    else this->moveMovingBlock(movment);
+    bestMovement.erase(bestMovement.begin());
+    bestMovement.erase(bestMovement.begin());
 }
 
 void ComputerUser::createNewMovingBlock() {
@@ -18,12 +25,115 @@ void ComputerUser::createNewMovingBlock() {
 void ComputerUser::calculateBestMovement() {
     std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allPossibleMovements = findAllPossibleMovements();
     std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> bestScoreMovements = allBestScoreMovement(allPossibleMovements);
-    if (bestScoreMovements.size() == 1)
+    if (bestScoreMovements.size() == 1) {
         bestMovement = bestScoreMovements[0].first;
-    else {
-
+        return;
     }
+    std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> mostPointsDownMovements = allMostPointsDownMovements(bestScoreMovements);
+    if (mostPointsDownMovements.size() == 1) {
+        bestMovement = mostPointsDownMovements[0].first;
+        return;
+    }
+    std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> leastPointsUpMovments = allLeastPointsUpMovments(mostPointsDownMovements);
+    if (leastPointsUpMovments.size() == 1) {
+        bestMovement = leastPointsUpMovments[0].first;
+        return;
+    }
+    int randomValue = rand() % leastPointsUpMovments.size();
+    bestMovement = leastPointsUpMovments[randomValue].first;
 }
+
+
+std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::allMostPointsDownMovements(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
+    std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allValidMovements;
+    int lowestY = getLowestY(allPossibleMovements[0].second);
+    int amountAtLowestY = 0;
+    int temp;
+    int yOffset = 1;
+    for (const auto& movement : allPossibleMovements) {
+        temp = getLowestY(movement.second);
+        if (temp > lowestY)
+            lowestY = temp;
+;    }
+    lowestY -= yOffset;
+    for (const auto& movement : allPossibleMovements) {
+        Board boardCopy = this->getBoard();
+        boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
+        temp = getAmountOfPointsAtY(boardCopy, lowestY);
+        if (temp > amountAtLowestY)
+            amountAtLowestY = temp;
+    }
+    for (const auto& movement : allPossibleMovements) {
+        Board boardCopy = this->getBoard();
+        boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
+        if (getAmountOfPointsAtY(boardCopy, lowestY) == amountAtLowestY) {
+            allValidMovements.push_back(movement);
+        }
+    }
+    return allValidMovements;
+}
+
+
+int ComputerUser::getAmountOfPointsAtY(Board& b, const int y) {
+    int res = 0;
+    for (int i = 0; i < GameConfig::BOARD_WIDTH; i++) {
+        if (b.getBoard()[i][y].getSymbol() != ' ')
+            res++;
+    }
+    return res;
+}
+
+int ComputerUser::getLowestY(const Block& b) {
+    const Point* points = b.getBlockPoints();
+    int lowest = points[0].getY();
+    for (int i = 1; i < 4; i++) {
+        if (points[i].getY() > lowest)
+            lowest = points[i].getY();
+    }
+    return lowest;
+}
+
+
+int ComputerUser::getHighestY(const Block& b) {
+    const Point* points = b.getBlockPoints();
+    int highest = points[0].getY();
+    for (int i = 1; i < 4; i++) {
+        if (points[i].getY() < highest)
+            highest = points[i].getY();
+    }
+    return highest;
+}
+
+std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>ComputerUser::allLeastPointsUpMovments(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
+    std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allValidMovements;
+    int highestY = getHighestY(allPossibleMovements[0].second);
+    int amountAtHighestY = GameConfig::BOARD_WIDTH;
+    int temp;
+    int yOffset = 1;
+    for (const auto& movement : allPossibleMovements) {
+        temp = getHighestY(movement.second);
+        if (temp < highestY)
+            highestY = temp;
+    }
+    highestY = yOffset;
+    for (const auto& movement : allPossibleMovements) {
+        Board boardCopy = this->getBoard();
+        boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
+        temp = getAmountOfPointsAtY(boardCopy, highestY);
+        if (temp < amountAtHighestY)
+            amountAtHighestY = temp;
+    }
+    for (const auto& movement : allPossibleMovements) {
+        Board boardCopy = this->getBoard();
+        boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
+        if (getAmountOfPointsAtY(boardCopy, highestY) == amountAtHighestY) {
+            allValidMovements.push_back(movement);
+        }
+    }
+
+    return allValidMovements;
+}
+
 
 std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::findAllPossibleMovements() {
     std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allPossibleMovements;
