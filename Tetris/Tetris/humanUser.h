@@ -10,7 +10,11 @@ class HumanUser : public User
 
 public:
 	// Constructor
-	HumanUser(char side) : User(side) { createNewMovingBlock(); };
+	HumanUser(char side) : User(side) { 
+		createNewMovingBlock();
+		resetBoard();
+		resetScore();
+	};
 
 	virtual void handleMovement(GameConfig::eKeys direction = GameConfig::eKeys::NONE);
 

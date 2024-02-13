@@ -35,12 +35,12 @@ void GameManager::setUpUsers() {
 		this->RUser = new ComputerUser('R');
 		break;
 	}
-	this->LUser->resetBoard();
-	this->LUser->createNewMovingBlock();
-	this->LUser->resetScore();
-	this->RUser->resetBoard();
-	this->RUser->createNewMovingBlock();
-	this->RUser->resetScore();
+	//this->LUser->resetBoard();
+	//this->LUser->createNewMovingBlock();
+	//this->LUser->resetScore();
+	//this->RUser->resetBoard();
+	//this->RUser->createNewMovingBlock();
+	//this->RUser->resetScore();
 
 }
 

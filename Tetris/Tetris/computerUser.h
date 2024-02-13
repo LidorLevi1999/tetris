@@ -35,7 +35,11 @@ public:
 		rotateClockwise(side == 'L' ? GameConfig::eKeys::ROTATE_CLOCKP1 : GameConfig::eKeys::ROTATE_CLOCKP2),
 		rotateCounterClockwise(side == 'L' ? GameConfig::eKeys::ROTATE_COUNTERP1 : GameConfig::eKeys::ROTATE_COUNTERP2),
 		downMove(side == 'L' ? GameConfig::eKeys::DROPP1 : GameConfig::eKeys::DROPP2) 
-	{ createNewMovingBlock(); };
+	{ 
+		createNewMovingBlock();
+		resetScore();
+		resetBoard();
+	};
 
 	virtual void handleMovement(GameConfig::eKeys direction = GameConfig::eKeys::NONE);
 };

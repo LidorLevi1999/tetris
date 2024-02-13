@@ -7,14 +7,15 @@
 #include <random>
 
 void ComputerUser::handleMovement(GameConfig::eKeys direction) {
-    GameConfig::eKeys movment = *(bestMovement.begin());
-    if (movment == rotateClockwise)
-        this->rotateMovingBlock();
-    else if (movment == rotateCounterClockwise)
-        this->rotateMovingBlock(false);
-    else this->moveMovingBlock(movment);
-    bestMovement.erase(bestMovement.begin());
-    bestMovement.erase(bestMovement.begin());
+    if (bestMovement.size() > 0) {
+        GameConfig::eKeys movment = *(bestMovement.begin());
+        if (movment == rotateClockwise)
+            this->rotateMovingBlock();
+        else if (movment == rotateCounterClockwise)
+            this->rotateMovingBlock(false);
+        else this->moveMovingBlock(movment);
+        bestMovement.erase(bestMovement.begin());
+    }
 }
 
 void ComputerUser::createNewMovingBlock() {
@@ -106,27 +107,30 @@ int ComputerUser::getHighestY(const Block& b) {
 
 std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>ComputerUser::allLeastPointsUpMovments(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
     std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allValidMovements;
+    
+    if (allPossibleMovements.empty()) {
+        return allValidMovements;
+    }
     int highestY = getHighestY(allPossibleMovements[0].second);
     int amountAtHighestY = GameConfig::BOARD_WIDTH;
-    int temp;
     int yOffset = 1;
+    int temp;
+
     for (const auto& movement : allPossibleMovements) {
         temp = getHighestY(movement.second);
         if (temp < highestY)
             highestY = temp;
-    }
-    highestY = yOffset;
-    for (const auto& movement : allPossibleMovements) {
+
         Board boardCopy = this->getBoard();
         boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
-        temp = getAmountOfPointsAtY(boardCopy, highestY);
-        if (temp < amountAtHighestY)
-            amountAtHighestY = temp;
-    }
-    for (const auto& movement : allPossibleMovements) {
-        Board boardCopy = this->getBoard();
-        boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
-        if (getAmountOfPointsAtY(boardCopy, highestY) == amountAtHighestY) {
+        int pointsAtY = getAmountOfPointsAtY(boardCopy, yOffset);
+
+        if (pointsAtY < amountAtHighestY) {
+            amountAtHighestY = pointsAtY;
+            allValidMovements.clear(); 
+        }
+
+        if (pointsAtY == amountAtHighestY) {
             allValidMovements.push_back(movement);
         }
     }
@@ -158,17 +162,16 @@ int ComputerUser::calculateMovingBlockDistanceFromLeftBorder() {
 std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::allBestScoreMovement(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
     int maxScore = 0;
     std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> bestScoreMovements;
+
     for (const auto& movement : allPossibleMovements) {
         Board boardCopy = this->getBoard();
         boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
         int score = boardCopy.validateBoard();
-        if (score > maxScore)
+
+        if (score > maxScore) {
+            bestScoreMovements.clear();
             maxScore = score;
-    }
-    for (const auto& movement : allPossibleMovements) {
-        Board boardCopy = this->getBoard();
-        boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
-        int score = boardCopy.validateBoard();
+        }
         if (score == maxScore) {
             bestScoreMovements.push_back(movement);
         }
@@ -181,57 +184,46 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::allB
 // Recursive function to explore all possible moves
 void ComputerUser::exploreAllPossibleMoves(Block& block, std::vector<GameConfig::eKeys>& moves, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allMoves)
 {
-    if (allMoves.size() > 2000)
+    if (allMoves.size() >= 20000)
         return;
+    if (!checkCopiedBlockCollisionWithBoard(block)) {
+        return;
+    }
     Block copyBlock = block;
     copyBlock.moveBlock(downMove);
     if (!checkCopiedBlockCollisionWithBoard(copyBlock)) {
         allMoves.push_back(std::make_pair(moves, block));
         return;
     }
-    else {
-        block.moveBlock(downMove);
-        moves.push_back(downMove);
-    }
 
-    Block downBlock = block;
+    Block downBlock = copyBlock;
     std::vector<GameConfig::eKeys> downMoves = moves;
     downBlock.moveBlock(downMove);
     downMoves.push_back(downMove);
+    exploreAllPossibleMoves(downBlock, downMoves, allMoves);
 
-    if (checkCopiedBlockCollisionWithBoard(downBlock)) {
-        exploreAllPossibleMoves(downBlock, downMoves, allMoves);
-    }
 
-    Block leftBlock = block;
+    Block leftBlock = copyBlock;
     std::vector<GameConfig::eKeys> leftMoves = moves;
     leftBlock.moveBlock(leftMove);
     leftMoves.push_back(leftMove);
-    if (checkCopiedBlockCollisionWithBoard(leftBlock)) {
-        exploreAllPossibleMoves(leftBlock, leftMoves, allMoves);
-    }
+    exploreAllPossibleMoves(leftBlock, leftMoves, allMoves);
 
-    Block rightBlock = block;
+    Block rightBlock = copyBlock;
     std::vector<GameConfig::eKeys> rightMoves = moves;
     rightBlock.moveBlock(rightMove);
     rightMoves.push_back(rightMove);
-    if (checkCopiedBlockCollisionWithBoard(rightBlock)) {
-        exploreAllPossibleMoves(rightBlock, rightMoves, allMoves);
-    }
+    exploreAllPossibleMoves(rightBlock, rightMoves, allMoves);
 
-    Block rotatedBlock = block;
+    Block rotatedBlock = copyBlock;
     std::vector<GameConfig::eKeys> rotateMoves = moves;
     rotatedBlock.rotateClockwise();
     rotateMoves.push_back(rotateClockwise);
-    if (checkCopiedBlockCollisionWithBoard(rotatedBlock)) {
-        exploreAllPossibleMoves(rotatedBlock, rotateMoves, allMoves);
-    }
+    exploreAllPossibleMoves(rotatedBlock, rotateMoves, allMoves);
 
-    Block rotatedCounterBlock = block;
+    Block rotatedCounterBlock = copyBlock;
     std::vector<GameConfig::eKeys> rotateCounterMoves = moves;
     rotatedCounterBlock.rotateCounterClockwise();
     rotateCounterMoves.push_back(rotateCounterClockwise);
-    if (checkCopiedBlockCollisionWithBoard(rotatedCounterBlock)) {
-        exploreAllPossibleMoves(rotatedCounterBlock, rotateCounterMoves, allMoves);
-    }
+    exploreAllPossibleMoves(rotatedCounterBlock, rotateCounterMoves, allMoves);
 }
