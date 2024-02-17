@@ -27,7 +27,7 @@ public:
 	void updateBoardWithPoints(const Point* const& points);
 
 	// Validates and clears full rows, updating the board and returning the score
-	int validateBoard();
+	int validateBoard(bool isRealBoard = true);
 
 	void performBombExplosion(const Point& bombPosition);
 private:

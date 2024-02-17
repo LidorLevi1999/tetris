@@ -13,6 +13,7 @@ class ComputerUser : public User
 	const GameConfig::eKeys downMove;
 	const GameConfig::eKeys rotateClockwise;
 	const GameConfig::eKeys rotateCounterClockwise;
+	int level;
 private:
 	std::vector<GameConfig::eKeys> bestMovement;
 	void createNewMovingBlock() override;
@@ -26,6 +27,12 @@ private:
 	int getLowestY(const Block& b);
 	int getHighestY(const Block& b);
 	int getAmountOfPointsAtY(Board& b,const int y);
+	int getHighestPointYAxisValueOnBoard();
+	int mapComputerLevelToStartAccurateSearchYPosition();
+	void nonAccurateSearch(Block myBlock, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements);
+	int getBlockDistanceFromLeftBorder(const Block& myBlock);
+	int getAmountOfPointsAboveY(Board& b, const int y);
+	int getBlockDistanceFromRightBorder(const Block& myBlock);
 public:
 	// Constructor
 	ComputerUser(char side) :
@@ -34,8 +41,9 @@ public:
 		rightMove(side == 'L' ? GameConfig::eKeys::RIGHTP1 : GameConfig::eKeys::RIGHTP2),
 		rotateClockwise(side == 'L' ? GameConfig::eKeys::ROTATE_CLOCKP1 : GameConfig::eKeys::ROTATE_CLOCKP2),
 		rotateCounterClockwise(side == 'L' ? GameConfig::eKeys::ROTATE_COUNTERP1 : GameConfig::eKeys::ROTATE_COUNTERP2),
-		downMove(side == 'L' ? GameConfig::eKeys::DROPP1 : GameConfig::eKeys::DROPP2) 
-	{ 
+		downMove(side == 'L' ? GameConfig::eKeys::DROPP1 : GameConfig::eKeys::DROPP2)
+	{
+		this->level = 2;
 		createNewMovingBlock();
 		resetScore();
 		resetBoard();

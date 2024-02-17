@@ -70,7 +70,7 @@ void Board::updateBoardWithPoints(const Point* const& points){
 }
 
 // Validates and clears full rows, updating the board and returning the score
-int Board::validateBoard() {
+int Board::validateBoard(bool isRealBoard) {
 	int scoreReceived = 0;
 	int multiplier = 1;
 	bool redrawRequired = false;
@@ -84,7 +84,7 @@ int Board::validateBoard() {
 		}
 	}
 
-	if (redrawRequired)
+	if (redrawRequired && isRealBoard)
 		drawBoard(this->side);
 
 	return scoreReceived;
