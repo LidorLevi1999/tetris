@@ -16,8 +16,8 @@ public:
 		resetScore();
 	};
 
-	virtual void handleMovement(GameConfig::eKeys direction = GameConfig::eKeys::NONE);
-
+	// Handles the movement of the current block.
+	virtual void handleMovement(GameConfig::eKeys direction = GameConfig::eKeys::NONE) override;
 };
 
 #endif

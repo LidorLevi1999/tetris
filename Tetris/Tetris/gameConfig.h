@@ -2,6 +2,11 @@
 
 #ifndef __GAME_CONFIG_H
 #define __GAME_CONFIG_H
+
+#define TETRIMINO_SYMBOL '#'
+#define BOMB_SYMBOL '@'
+#define EMPTY_SPACE ' '
+
 class GameConfig
 {
 public:
@@ -34,12 +39,8 @@ public:
         ShapeT = 2,
         ShapeL = 3,
         ShapeJ = 4,
-        ShapeS = 5
+        ShapeS = 5,
         // ShapeZ = 6 (currently as default)
-
-        // Symbols
-        //ShapeSymbol = #,
-        //BombSymbol = @
     };
 
 	// Board dimensions

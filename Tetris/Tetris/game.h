@@ -48,6 +48,9 @@ public:
 
     //Check if the user provided reached the top part of the board and handle as the result
     void checkUserReachedTop(User& user);
+
+    // Destructor
+    ~GameManager();
 };
 
 #endif

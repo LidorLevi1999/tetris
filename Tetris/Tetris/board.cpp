@@ -15,7 +15,7 @@ Board::Board(char side) {
 void Board::clearBoard() {
 	for (int row = 0; row < GameConfig::BOARD_HEIGHT; row++) {
 		for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
-			this->board[col][row].setSymbol(' ');
+			this->board[col][row].setSymbol(EMPTY_SPACE);
 			this->board[col][row].setColor(GameConfig::COLORS[0]);
 			this->board[col][row].setCoordinates(col + (this->side == 'L' ? GameConfig::MIN_X : 2 * GameConfig::MIN_X) + (this->side == 'L' ? 0 : GameConfig::RIVAL_POS), row + GameConfig::MIN_Y, false);
 		}
@@ -40,7 +40,7 @@ void Board::drawBoard(char side) {
 		std::cout << "|";  // Print the leftmost vertical bar
 		for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
 			char symbol = this->board[col][row].getSymbol();
-			if (symbol == '#')
+			if (symbol == TETRIMINO_SYMBOL)
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), this->board[col][row].getColor());
 			std::cout << symbol;
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
@@ -93,7 +93,7 @@ int Board::validateBoard(bool isRealBoard) {
 // Checks if a given row is completely filled with blocks
 bool Board::isAllRowFull(int row) const {
 	for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
-		if (this->board[col][row].getSymbol() == ' ')
+		if (this->board[col][row].getSymbol() == EMPTY_SPACE)
 			return false;
 	}
 	return true;
@@ -107,7 +107,7 @@ void Board::bombRowAndFixBoard(int row) {
 		}
 	}
 	for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
-		this->board[col][0].setSymbol(' ');
+		this->board[col][0].setSymbol(EMPTY_SPACE);
 	}
 }
 
@@ -124,7 +124,7 @@ void Board::performBombExplosion(const Point& bombPosition) {
 
 	for (int i = startY; i <= endY; i++) {
 		for (int j = startX; j <= endX; j++) {
-			board[j][i].setSymbol(' ');
+			board[j][i].setSymbol(EMPTY_SPACE);
 			board[j][i].setColor(GameConfig::COLORS[0]);
 		}
 	}
@@ -143,13 +143,13 @@ void Board::updateBoardPointsAfterExplosion() {
 
 void Board::dropPointsDown(int col) {
 	for (int i = GameConfig::BOARD_HEIGHT - 1; i > 0; i--) {
-		if(this->board[col][i].getSymbol() == ' ') {
+		if(this->board[col][i].getSymbol() == EMPTY_SPACE) {
 			for (int j = i - 1; j > 0; j--) {
-				if (this->board[col][j].getSymbol() == '#') {
+				if (this->board[col][j].getSymbol() == TETRIMINO_SYMBOL) {
 					this->board[col][i].setColor(this->board[col][j].getColor());
 					this->board[col][i].setSymbol(this->board[col][j].getSymbol());
 					this->board[col][j].setColor(GameConfig::COLORS[0]);
-					this->board[col][j].setSymbol(' ');
+					this->board[col][j].setSymbol(EMPTY_SPACE);
 					break;
 				}
 			}

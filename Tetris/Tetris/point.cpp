@@ -18,7 +18,7 @@ Point::Point(int x, int y, char symbol, int color) {
 // Function to set the coordinates of the point and optionally draw it
 void Point::setCoordinates(int x, int y, bool shouldDraw) {
 	if (shouldDraw) {
-		draw(' ');
+		draw(EMPTY_SPACE);
 		this->x = x;
 		this->y = y;
 	}

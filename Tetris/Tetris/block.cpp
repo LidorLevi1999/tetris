@@ -28,34 +28,34 @@ void Block::buildBlockPoints() {
 	if (this->side == 'R')
 		middleX += GameConfig::RIVAL_POS;
 
-	this->points[0] = Point(middleX, 2, '#', this->blockColor);
+	this->points[0] = Point(middleX, 2, TETRIMINO_SYMBOL, this->blockColor);
 
 	switch (this->blockShape) {
 	case eTetriminoShape::O:
-		generate3NonCenterPoints(Point(middleX + 1, 2, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor), Point(middleX , 1, '#', this->blockColor));
+		generate3NonCenterPoints(Point(middleX + 1, 2, TETRIMINO_SYMBOL, this->blockColor), Point(middleX + 1, 1, TETRIMINO_SYMBOL, this->blockColor), Point(middleX , 1, TETRIMINO_SYMBOL, this->blockColor));
 		break;
 	case eTetriminoShape::T:
-		generate3NonCenterPoints(Point(middleX - 1, 2, '#', this->blockColor), Point(middleX + 1, 2, '#', this->blockColor), Point(middleX, 1, '#', this->blockColor));
+		generate3NonCenterPoints(Point(middleX - 1, 2, TETRIMINO_SYMBOL, this->blockColor), Point(middleX + 1, 2, TETRIMINO_SYMBOL, this->blockColor), Point(middleX, 1, TETRIMINO_SYMBOL, this->blockColor));
 		break;
 	case eTetriminoShape::L:
-		generate3NonCenterPoints(Point(middleX - 1, 2, '#', this->blockColor), Point(middleX + 1, 2, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor));
+		generate3NonCenterPoints(Point(middleX - 1, 2, TETRIMINO_SYMBOL, this->blockColor), Point(middleX + 1, 2, TETRIMINO_SYMBOL, this->blockColor), Point(middleX + 1, 1, TETRIMINO_SYMBOL, this->blockColor));
 		break;
 	case eTetriminoShape::J:
-		generate3NonCenterPoints(Point(middleX - 1, 1, '#' , this->blockColor), Point(middleX - 1, 2, '#', this->blockColor), Point(middleX + 1, 2, '#', this->blockColor));
+		generate3NonCenterPoints(Point(middleX - 1, 1, TETRIMINO_SYMBOL , this->blockColor), Point(middleX - 1, 2, TETRIMINO_SYMBOL, this->blockColor), Point(middleX + 1, 2, TETRIMINO_SYMBOL, this->blockColor));
 		break;
 	case eTetriminoShape::S:
-		generate3NonCenterPoints(Point(middleX - 1, 2, '#', this->blockColor), Point(middleX , 1, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor));
+		generate3NonCenterPoints(Point(middleX - 1, 2, TETRIMINO_SYMBOL, this->blockColor), Point(middleX , 1, TETRIMINO_SYMBOL, this->blockColor), Point(middleX + 1, 1, TETRIMINO_SYMBOL, this->blockColor));
 		break;
 	case eTetriminoShape::Z:
-		generate3NonCenterPoints(Point(middleX - 1, 1 , '#', this->blockColor), Point(middleX, 1, '#', this->blockColor), Point(middleX + 1, 2, '#', this->blockColor));
+		generate3NonCenterPoints(Point(middleX - 1, 1 , TETRIMINO_SYMBOL, this->blockColor), Point(middleX, 1, TETRIMINO_SYMBOL, this->blockColor), Point(middleX + 1, 2, TETRIMINO_SYMBOL, this->blockColor));
 		break;
 	case eTetriminoShape::I:
-		this->points[0] = Point(middleX, 1, '#', this->blockColor);
-		generate3NonCenterPoints(Point(middleX - 1, 1, '#', this->blockColor), Point(middleX + 1, 1, '#', this->blockColor), Point(middleX + 2, 1, '#', this->blockColor));
+		this->points[0] = Point(middleX, 1, TETRIMINO_SYMBOL, this->blockColor);
+		generate3NonCenterPoints(Point(middleX - 1, 1, TETRIMINO_SYMBOL, this->blockColor), Point(middleX + 1, 1, TETRIMINO_SYMBOL, this->blockColor), Point(middleX + 2, 1, TETRIMINO_SYMBOL, this->blockColor));
 		break;
 	case eTetriminoShape::Bomb:
-		this->points[0].setSymbol('@');
-		generate3NonCenterPoints(Point(middleX, 2, '@', this->blockColor), Point(middleX, 2, '@', this->blockColor), Point(middleX, 2, '@', this->blockColor));
+		this->points[0].setSymbol(BOMB_SYMBOL);
+		generate3NonCenterPoints(Point(middleX, 2, BOMB_SYMBOL, this->blockColor), Point(middleX, 2, BOMB_SYMBOL, this->blockColor), Point(middleX, 2, BOMB_SYMBOL, this->blockColor));
 		return;
 	}
 
@@ -75,7 +75,7 @@ void Block::fromBlockToMatrix(char(&matrix)[3][3]) {
 
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			matrix[i][j] = ' ';
+			matrix[i][j] = EMPTY_SPACE;
 		}
 	}
 
@@ -132,6 +132,7 @@ bool Block::moveBlock(GameConfig::eKeys key, bool shouldDraw) {
 
 // Returns a random Tetrimino shape
 Block::eTetriminoShape Block::getRandomShape() {
+	return Block::eTetriminoShape::I;
 	int randomValue = rand() % 100;
 	if (randomValue >= 0 && randomValue < 5)
 		return Block::eTetriminoShape::Bomb;

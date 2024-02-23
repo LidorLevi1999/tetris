@@ -9,6 +9,7 @@ class User
 {
 	int score;
 	char side;
+	bool didImove;
 
 protected:
 	Block movingBlock;
@@ -21,6 +22,7 @@ public:
 	// Getter methods
 	int getScore() const { return this->score; };
 	char getSide() const { return this->side; };
+	bool getIfMoved() const { return this->didImove; };
 	Block& getMovingBlock() { return this->movingBlock; };
 	Board getBoard() { return this->board; };
 
@@ -43,6 +45,9 @@ public:
 
 	void increaseScore(int scoreReceived) { this->score += scoreReceived; };
 	void resetScore() { this->score = 0; };
+
+	// Set if moved method
+	void setMoved(bool moved) { this->didImove = moved; };
 };
 
 #endif

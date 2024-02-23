@@ -8,6 +8,7 @@
 User::User(char side):	board(Board(side)){
 	this->side = side;
 	this->score = 0;
+	this->didImove = false;
 };
 
 // Reset the user's board
@@ -92,7 +93,7 @@ bool User::checkCopiedBlockCollisionWithBoard(Block& copiedBlock) {
 		if (xToCheck < 0 || xToCheck > GameConfig::BOARD_WIDTH - 1) return false;
 		if (yToCheck < 0 || yToCheck >= GameConfig::BOARD_HEIGHT) return false;
 		pointSymbol = this->board.getBoard()[(xToCheck)][(yToCheck)].getSymbol();
-		if (pointSymbol != ' ')
+		if (pointSymbol != EMPTY_SPACE)
 			return false;
 	}
 	return true;

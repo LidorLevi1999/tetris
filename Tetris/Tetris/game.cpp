@@ -74,6 +74,7 @@ void GameManager::startGame() {
 			playGame();
 			break;
 
+		// Quit the game
 		case GameConfig::eKeys::Quit:
 			return;
 		}
@@ -210,9 +211,9 @@ void GameManager::showInstructions() {
 // Play the main game loop
 void GameManager::playGame() {
 	drawBoards();
-	bool leftBlockMoved , rightBlockMoved = false;
+	bool leftBlockMoved = false, rightBlockMoved = false;
 	while (this->isGameRunning) {
-		if (_kbhit()) {
+		while (_kbhit()) {
 			char pressedChar = _getch();
 			pressedChar = tolower(pressedChar);
 			leftBlockMoved = rightBlockMoved = false;
@@ -223,19 +224,19 @@ void GameManager::playGame() {
 				Sleep(5000);
 				return;
 			}
-			if (typeid(*LUser) == typeid(HumanUser)) {
-				this->LUser->handleMovement((GameConfig::eKeys)pressedChar);
-			}
-			if (typeid(*RUser) == typeid(HumanUser)) {
-				this->RUser->handleMovement((GameConfig::eKeys)pressedChar);
-			}
+			// Human user
+			if (!LUser->getIfMoved()) 
+				LUser->handleMovement((GameConfig::eKeys)pressedChar);
+			if (!RUser->getIfMoved())
+				RUser->handleMovement((GameConfig::eKeys)pressedChar);
 		}
-		if (typeid(*LUser) == typeid(ComputerUser)) {
-			this->LUser->handleMovement();
-		}
-		if (typeid(*RUser) == typeid(ComputerUser)) {
-			this->RUser->handleMovement();
-		}
+		// Allows the player to make another move
+		LUser->setMoved(false);
+		RUser->setMoved(false);
+
+		// Computer user
+		LUser->handleMovement();
+		RUser->handleMovement();
 
 		// Move the blocks down and check if they couldn't move
 		leftBlockMoved = this->LUser->moveMovingBlock(GameConfig::eKeys::DROPP1);
@@ -260,7 +261,7 @@ void GameManager::playGame() {
 			checkUserReachedTop(*this->RUser);
 
 		// Game speed
-		Sleep(600);
+		Sleep(100);
 	}
 }
 
@@ -332,4 +333,16 @@ void GameManager::updateScoreTable() {
 	std::cout << this->LUser->getScore();
 	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y + 1);
 	std::cout << this->RUser->getScore();
+}
+
+// Destructor
+GameManager::~GameManager() {
+	if (LUser != nullptr) {
+		delete LUser;
+		LUser = nullptr;
+	}
+	if (RUser != nullptr) {
+		delete RUser;
+		RUser = nullptr;
+	}
 }
