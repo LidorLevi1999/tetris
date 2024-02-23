@@ -63,7 +63,7 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::allM
     std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allValidMovements;
     int lowestY = getLowestY(allPossibleMovements[0].second);
     int yOffset = 1;
-    lowestY -= yOffset;
+    //lowestY -= yOffset;
     int amountAtLowestY = 0;
     for (const auto& movement : allPossibleMovements) {
         Board boardCopy = this->getBoard();
@@ -169,11 +169,11 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
     int accurateStartPosition = mapComputerLevelToStartAccurateSearchYPosition();
 
     //exploreAllPossibleMoves(myBlock, currentMove, allPossibleMovements);
-    //int numOfEmptyColumnts
+    int numOfEmptyColumnts = getAmountOfEmptyColumns();
 
-    nonAccurateSearch(myBlock, allPossibleMovements);
-
-    if (highestY <= accurateStartPosition && getAmountOfPointsAboveY(this->board, accurateStartPosition) >= 4) {
+    //nonAccurateSearch(myBlock, allPossibleMovements);
+    
+    if (highestY <= accurateStartPosition && numOfEmptyColumnts <= myBlock.getIsBomb() ? 1 : 2 && getAmountOfPointsAboveY(this->board, accurateStartPosition) >= 4) {
         exploreAllPossibleMoves(myBlock, currentMove, allPossibleMovements);
     }
     else {
@@ -273,67 +273,7 @@ int ComputerUser::mapComputerLevelToStartAccurateSearchYPosition() {
     return 9;
 }
 
-// NEED TO BE DELETED IN CASE NOT IN USE
-void ComputerUser::nonAccurateSearch(Block myBlock, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
-    this->board.drawBoard(this->getSide());
-    this->getMovingBlock().drawBlock();
-    int leftDistance = getBlockDistanceFromLeftBorder(myBlock);
-    int rightDistance = getBlockDistanceFromRightBorder(myBlock);
-    Block copyBlock;
-    std::vector<GameConfig::eKeys> moves;
-
-    // Perform rotations and movements to the left
-    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
-        for (int i = 0; i <= leftDistance; i++) { // Adjusted loop condition
-            copyBlock = myBlock;
-            moves.clear();
-            // Rotate the block
-            for (int j = 0; j <= rotateCount; j++) {
-                copyBlock.rotateClockwise();
-                moves.push_back(rotateClockwise);
-            }
-            // Move the block to the left
-            for (int k = 0; k < i; k++) { // Adjusted loop condition
-                copyBlock.moveBlock(leftMove);
-                moves.push_back(leftMove);
-            }
-            // Move the block down until it collides or reaches the bottom
-            while (checkCopiedBlockCollisionWithBoard(copyBlock)) { // Added condition to check if the block reached the bottom
-                copyBlock.moveBlock(downMove);
-                moves.push_back(downMove);
-            }
-            // Add the movement sequence to the list of possible movements
-            allPossibleMovements.push_back(std::make_pair(moves, copyBlock));
-        }
-    }
-
-    // Perform rotations and movements to the right
-    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
-        for (int i = 0; i <= rightDistance; i++) { // Adjusted loop condition
-            copyBlock = myBlock;
-            moves.clear();
-            // Rotate the block
-            for (int j = 0; j <= rotateCount; j++) {
-                copyBlock.rotateClockwise();
-                moves.push_back(rotateClockwise);
-            }
-            // Move the block to the right
-            for (int k = 0; k < i; k++) { // Adjusted loop condition
-                copyBlock.moveBlock(rightMove);
-                moves.push_back(rightMove);
-            }
-            // Move the block down until it collides or reaches the bottom
-            while (checkCopiedBlockCollisionWithBoard(copyBlock)) { // Added condition to check if the block reached the bottom
-                copyBlock.moveBlock(downMove);
-                moves.push_back(downMove);
-            }
-            // Add the movement sequence to the list of possible movements
-            allPossibleMovements.push_back(std::make_pair(moves, copyBlock));
-        }
-    }
-}
-
-// LIDOR'S ORIGINAL NONACCURATESEARCTH
+//// NEED TO BE DELETED IN CASE NOT IN USE
 //void ComputerUser::nonAccurateSearch(Block myBlock, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
 //    this->board.drawBoard(this->getSide());
 //    this->getMovingBlock().drawBlock();
@@ -341,62 +281,123 @@ void ComputerUser::nonAccurateSearch(Block myBlock, std::vector<std::pair<std::v
 //    int rightDistance = getBlockDistanceFromRightBorder(myBlock);
 //    Block copyBlock;
 //    std::vector<GameConfig::eKeys> moves;
-//    copyBlock.moveBlock(downMove);
-//    moves.push_back(downMove);
+//
 //    // Perform rotations and movements to the left
 //    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
-//        for (int i = leftDistance; i >= 0; i--) {
+//        for (int i = 0; i <= leftDistance; i++) { // Adjusted loop condition
 //            copyBlock = myBlock;
 //            moves.clear();
+//            // Rotate the block
 //            for (int j = 0; j <= rotateCount; j++) {
 //                copyBlock.rotateClockwise();
 //                moves.push_back(rotateClockwise);
-//                copyBlock.moveBlock(downMove);
 //            }
-//            for (int k = 0; k <= i; k++) {
-//                copyBlock.moveBlock(leftMove);  // Move left
+//            // Move the block to the left
+//            for (int k = 0; k < i; k++) { // Adjusted loop condition
+//                copyBlock.moveBlock(leftMove);
 //                moves.push_back(leftMove);
-//                copyBlock.moveBlock(downMove);
 //            }
-//            while (true) {
-//                Block previousCopyBlock = copyBlock;  
+//            // Move the block down until it collides or reaches the bottom
+//            while (checkCopiedBlockCollisionWithBoard(copyBlock)) { // Added condition to check if the block reached the bottom
 //                copyBlock.moveBlock(downMove);
-//
-//                if (!checkCopiedBlockCollisionWithBoard(copyBlock)) {
-//                    allPossibleMovements.push_back(std::make_pair(moves, previousCopyBlock));
-//                    break;
-//                }
+//                moves.push_back(downMove);
 //            }
+//            // Add the movement sequence to the list of possible movements
+//            allPossibleMovements.push_back(std::make_pair(moves, copyBlock));
 //        }
 //    }
-//
+//    moves.clear();
 //    // Perform rotations and movements to the right
 //    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
-//        for (int i = rightDistance; i >= 0; i--) {
+//        for (int i = 0; i <= rightDistance; i++) { // Adjusted loop condition
 //            copyBlock = myBlock;
 //            moves.clear();
-//
+//            // Rotate the block
 //            for (int j = 0; j <= rotateCount; j++) {
 //                copyBlock.rotateClockwise();
 //                moves.push_back(rotateClockwise);
-//                copyBlock.moveBlock(downMove);
 //            }
-//            for (int k = 0; k <= i; k++) {
-//                copyBlock.moveBlock(rightMove);  // Move left
+//            // Move the block to the right
+//            for (int k = 0; k < i; k++) { // Adjusted loop condition
+//                copyBlock.moveBlock(rightMove);
 //                moves.push_back(rightMove);
-//                copyBlock.moveBlock(downMove);
 //            }
-//            while (true) {
-//                Block previousCopyBlock = copyBlock;
+//            // Move the block down until it collides or reaches the bottom
+//            while (checkCopiedBlockCollisionWithBoard(copyBlock)) { // Added condition to check if the block reached the bottom
 //                copyBlock.moveBlock(downMove);
-//                if (!checkCopiedBlockCollisionWithBoard(copyBlock)) {
-//                    allPossibleMovements.push_back(std::make_pair(moves, previousCopyBlock));
-//                    break;
-//                }
+//                moves.push_back(downMove);
 //            }
+//            // Add the movement sequence to the list of possible movements
+//            allPossibleMovements.push_back(std::make_pair(moves, copyBlock));
 //        }
 //    }
 //}
+
+// LIDOR'S ORIGINAL NONACCURATESEARCTH
+void ComputerUser::nonAccurateSearch(Block myBlock, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
+    this->board.drawBoard(this->getSide());
+    this->getMovingBlock().drawBlock();
+    int leftDistance = getBlockDistanceFromLeftBorder(myBlock);
+    int rightDistance = getBlockDistanceFromRightBorder(myBlock);
+    Block copyBlock;
+    std::vector<GameConfig::eKeys> moves;
+    copyBlock.moveBlock(downMove);
+    moves.push_back(downMove);
+    // Perform rotations and movements to the left
+    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
+        for (int i = leftDistance; i >= 0; i--) {
+            copyBlock = myBlock;
+            moves.clear();
+            for (int j = 0; j <= rotateCount; j++) {
+                copyBlock.rotateClockwise();
+                moves.push_back(rotateClockwise);
+                copyBlock.moveBlock(downMove);
+            }
+            for (int k = 0; k <= i; k++) {
+                copyBlock.moveBlock(leftMove);  // Move left
+                moves.push_back(leftMove);
+                copyBlock.moveBlock(downMove);
+            }
+            while (true) {
+                Block previousCopyBlock = copyBlock;  
+                copyBlock.moveBlock(downMove);
+
+                if (!checkCopiedBlockCollisionWithBoard(copyBlock)) {
+                    allPossibleMovements.push_back(std::make_pair(moves, previousCopyBlock));
+                    break;
+                }
+            }
+        }
+    }
+    moves.clear();
+
+    // Perform rotations and movements to the right
+    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
+        for (int i = rightDistance; i >= 0; i--) {
+            copyBlock = myBlock;
+            moves.clear();
+
+            for (int j = 0; j <= rotateCount; j++) {
+                copyBlock.rotateClockwise();
+                moves.push_back(rotateClockwise);
+                copyBlock.moveBlock(downMove);
+            }
+            for (int k = 0; k <= i; k++) {
+                copyBlock.moveBlock(rightMove);  // Move left
+                moves.push_back(rightMove);
+                copyBlock.moveBlock(downMove);
+            }
+            while (true) {
+                Block previousCopyBlock = copyBlock;
+                copyBlock.moveBlock(downMove);
+                if (!checkCopiedBlockCollisionWithBoard(copyBlock)) {
+                    allPossibleMovements.push_back(std::make_pair(moves, previousCopyBlock));
+                    break;
+                }
+            }
+        }
+    }
+}
 
 // Gets the distance of the given block from the left border.
 int ComputerUser::getBlockDistanceFromLeftBorder(const Block& myBlock) {
@@ -428,4 +429,22 @@ int ComputerUser::getAmountOfPointsAboveY(Board& b, const int y) {
     for (int currentY = y; currentY >= 0; --currentY) 
         totalPoints += getAmountOfPointsAtY(b, currentY);
     return totalPoints;
+}
+
+
+int ComputerUser::getAmountOfEmptyColumns()  {
+    int res = 0;
+    bool isColumnEmpty = true;
+    for (int i = 0; i < GameConfig::BOARD_WIDTH; i++) {
+        for (int j = 0; j < GameConfig::BOARD_HEIGHT; j++) {
+            if (this->board.getBoard()[i][j].getSymbol() != EMPTY_SPACE) {
+                isColumnEmpty = false;
+                break;
+            }
+        }
+        if (isColumnEmpty)
+            res++;
+        isColumnEmpty = true;
+    }
+    return res;
 }

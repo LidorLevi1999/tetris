@@ -65,6 +65,8 @@ class ComputerUser : public User
 	// Gets the distance of the given block from the right border of the game board.
 	int getBlockDistanceFromRightBorder(const Block& myBlock);
 
+	int getAmountOfEmptyColumns() ;
+
 public:
 	// Constructor
 	ComputerUser(char side) :
