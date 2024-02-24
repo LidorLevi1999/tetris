@@ -583,6 +583,7 @@ int ComputerUser::getAmountOfEmptyColumns()  {
 std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::findAllPossibleMovements() {
     std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allPossibleMovements;
     Block blockCopy = getMovingBlock();
+    blockCopy.drawBlock();
     int leftDistance = getBlockDistanceFromLeftBorder(blockCopy);
     int rightDistance = getBlockDistanceFromRightBorder(blockCopy);
     std::vector<GameConfig::eKeys> leftMoves;
@@ -609,7 +610,7 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
             currentBlock = afterRotate;
             leftMovesAfter = leftMoves;
             // Move the block to the left
-            for (int i = 0; i < col; ++i) {
+            for (int i = 0; i <= col; ++i) {
                 currentBlock.moveBlock(leftMove);
                 leftMovesAfter.push_back(leftMove);
             }
@@ -627,8 +628,8 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
             currentBlock = afterRotate;
             rightMovesAfter = rightMoves;
             // Move the block to the right
-            for (int i = 0; i < col; ++i) {
-                if (i == 4)
+            for (int i = 0; i <= col; ++i) {
+                if (i == 5)
                 {
                     continue;
                 }
@@ -636,12 +637,14 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
                 rightMovesAfter.push_back(rightMove);
             }
             // Move the block down until it collides or reaches the bottom
+            Block beforeBlockedBlock = currentBlock;
             while (checkCopiedBlockCollisionWithBoard(currentBlock)) {
+                beforeBlockedBlock = currentBlock;
                 currentBlock.moveBlock(downMove);
                 rightMovesAfter.push_back(downMove);
             }
             // Add the movement sequence to the list of possible movements
-            allPossibleMovements.push_back(std::make_pair(rightMovesAfter, currentBlock));
+            allPossibleMovements.push_back(std::make_pair(rightMovesAfter, beforeBlockedBlock));
         }
 
         if (currentBlock.getIsBomb() || currentBlock.getShape() == Block::eTetriminoShape::O)
