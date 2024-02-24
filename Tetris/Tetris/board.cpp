@@ -58,12 +58,17 @@ void Board::drawBoard(char side) {
 }
 
 // Updates the game board with the current block's points
-void Board::updateBoardWithPoints(const Point* const& points){
-	int xOffset = this->side == 'L' ? 1 : GameConfig::RIVAL_POS + 1;
-	int row, col;
+void Board::updateBoardWithPoints(const Point* const& points) {
+	// Determine the offset based on the side
+	int xOffset = (this->side == 'L') ? 1 : GameConfig::RIVAL_POS + 1;
+
+	// Iterate over the points and update the board
 	for (int i = 0; i < 4; i++) {
-		row = points[i].getX() - xOffset;
-		col = points[i].getY() - 1;
+		// Calculate the row and column for each point
+		int row = points[i].getX() - xOffset;
+		int col = points[i].getY() - 1;
+
+	    // Update the board with the symbol and color of the point
 		this->board[row][col].setSymbol(points[i].getSymbol());
 		this->board[row][col].setColor(points[i].getColor());
 	}

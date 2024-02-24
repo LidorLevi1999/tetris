@@ -53,8 +53,11 @@ public:
     // Increase the count of moved times
     void increaseMoveAmount() { this->movedAmount++; };
 
-    //Returns if the current block is a bomb;
+    //Returns if the current block is a bomb
     bool getIsBomb() const { return this->isBomb; };
+
+    //Returns the current block shape
+    eTetriminoShape getShape() const { return this->blockShape; };
 
 private:
     // Build the 4 points of the block based on its shape

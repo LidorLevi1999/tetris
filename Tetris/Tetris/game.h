@@ -49,6 +49,9 @@ public:
     //Check if the user provided reached the top part of the board and handle as the result
     void checkUserReachedTop(User& user);
 
+    // Ask the user for the relevant computer level
+    int computerLevel(char side);
+
     // Destructor
     ~GameManager();
 };

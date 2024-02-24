@@ -21,6 +21,8 @@ void GameManager::setupNewGame(bool useColors) {
 }
 
 void GameManager::setUpUsers() {
+	clearScreen();
+
 	switch ((GameConfig::eKeys)this->option) {
 	case GameConfig::eKeys::HumanVsHuman:
 		this->LUser = new HumanUser('L');
@@ -28,11 +30,11 @@ void GameManager::setUpUsers() {
 		break;
 	case GameConfig::eKeys::HumanVsComputer:
 		this->LUser = new HumanUser('L');
-		this->RUser = new ComputerUser('R');
+		this->RUser = new ComputerUser('R', computerLevel('R'));
 		break;
 	case GameConfig::eKeys::ComputerVsComputer:
-		this->LUser = new ComputerUser('L');
-		this->RUser = new ComputerUser('R');
+		this->LUser = new ComputerUser('L', computerLevel('L'));
+		this->RUser = new ComputerUser('R', computerLevel('R'));
 		break;
 	}
 	//this->LUser->resetBoard();
@@ -41,7 +43,6 @@ void GameManager::setUpUsers() {
 	//this->RUser->resetBoard();
 	//this->RUser->createNewMovingBlock();
 	//this->RUser->resetScore();
-
 }
 
 // Start the game and handle menu selections
@@ -100,7 +101,6 @@ int GameManager::showMenu() {
 		std::cout << "(6) Start a new colored game - Human vs Computer" << std::endl;
 		std::cout << "(7) Start a new colored game - Computer vs Computer" << std::endl << std::endl;
 
-		//std::cout << "(4) Start a new game - with colors" << std::endl;
 		std::cout << "(8) Present instructions and keys" << std::endl;
 		std::cout << "(9) EXIT" << std::endl << std::endl;
 
@@ -123,18 +123,13 @@ int GameManager::showMenu() {
 				clearScreen();
 				std::cout << "The game will resume in 3 seconds.." << std::endl;
 				Sleep(3000);
-				return selectedOption; // SHOULD BE CHANGED TO 4
+				return selectedOption;
 			}
 			else {
 				std::cout << "Invalid selection. Please try again." << std::endl;
 				Sleep(400);
 				break;
 			}
-		/*case '4': 
-			clearScreen();
-			std::cout << "A new game with colors will start in 3 seconds.." << std::endl;
-			Sleep(3000);
-			return 4;*/
 		case GameConfig::eKeys::HumanVsHumanColors:
 		case GameConfig::eKeys::HumanVsComputerColors:
 		case GameConfig::eKeys::ComputerVsComputerColors:
@@ -333,6 +328,61 @@ void GameManager::updateScoreTable() {
 	std::cout << this->LUser->getScore();
 	gotoxy(GameConfig::BOARD_WIDTH + 12, GameConfig::MIN_Y + 1);
 	std::cout << this->RUser->getScore();
+}
+
+// Ask the user for the relevant computer level
+int GameManager::computerLevel(char side) {
+	int choice = 1;
+	bool isChosen = false;
+	while (!isChosen) {
+		clearScreen();
+		std::cout << "Please select the requested level for the ";
+		if (side == 'L') {
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[1]);
+			std::cout << "Left side." << std::endl << std::endl;
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
+		}
+		else {
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[2]);
+			std::cout << "Right side." << std::endl << std::endl;
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GameConfig::COLORS[0]);
+		}
+
+		std::cout << "(a) Best level" << std::endl;
+		std::cout << "(b) Good level" << std::endl;
+		std::cout << "(c) Novice level" << std::endl << std::endl;
+
+		char selectedOption = _getch();
+		switch (selectedOption) {
+		case 'a':
+			isChosen = true;
+			break;
+		case 'b':
+			isChosen = true;
+			choice = 2;
+			break;
+		case 'c':
+			isChosen = true;
+			choice = 3;
+			break;
+		default:
+			std::cout << "Invalid selection. Please try again." << std::endl;
+			Sleep(400);
+			break;
+		}
+	}
+	if (side == 'R')
+	{
+		clearScreen();
+		std::cout << "A new game will start in 3 seconds.." << std::endl;
+		Sleep(3000);
+		clearScreen();
+	}
+	else {
+		clearScreen();
+		Sleep(200);
+	}
+	return choice;
 }
 
 // Destructor
