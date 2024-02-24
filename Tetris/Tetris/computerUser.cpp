@@ -583,7 +583,6 @@ int ComputerUser::getAmountOfEmptyColumns()  {
 std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::findAllPossibleMovements() {
     std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allPossibleMovements;
     Block blockCopy = getMovingBlock();
-    blockCopy.drawBlock();
     int leftDistance = getBlockDistanceFromLeftBorder(blockCopy);
     int rightDistance = getBlockDistanceFromRightBorder(blockCopy);
     std::vector<GameConfig::eKeys> leftMoves;
@@ -598,6 +597,13 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
         Block currentBlock = blockCopy;
 
         for (int k = 0; k < rotation; k++) {
+            // So it won't rotate outside the board
+            if (currentBlock.getShape() == Block::eTetriminoShape::I)
+            {
+                currentBlock.moveBlock(downMove);
+                leftMoves.push_back(downMove);
+                rightMoves.push_back(downMove);
+            }
             currentBlock.rotateClockwise();
             leftMoves.push_back(rotateClockwise);
             rightMoves.push_back(rotateClockwise);
@@ -615,12 +621,14 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
                 leftMovesAfter.push_back(leftMove);
             }
             // Move the block down until it collides or reaches the bottom
+            Block beforeBlockedBlock = currentBlock;
             while (checkCopiedBlockCollisionWithBoard(currentBlock)) {
+                beforeBlockedBlock = currentBlock;
                 currentBlock.moveBlock(downMove);
                 leftMovesAfter.push_back(downMove);
             }
             // Add the movement sequence to the list of possible movements
-            allPossibleMovements.push_back(std::make_pair(leftMovesAfter, currentBlock));
+            allPossibleMovements.push_back(std::make_pair(leftMovesAfter, beforeBlockedBlock));
         }
 
         // Evaluate all possible movements to the right
@@ -629,10 +637,6 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
             rightMovesAfter = rightMoves;
             // Move the block to the right
             for (int i = 0; i <= col; ++i) {
-                if (i == 5)
-                {
-                    continue;
-                }
                 currentBlock.moveBlock(rightMove);
                 rightMovesAfter.push_back(rightMove);
             }
