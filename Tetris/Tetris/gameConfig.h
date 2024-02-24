@@ -3,6 +3,7 @@
 #ifndef __GAME_CONFIG_H
 #define __GAME_CONFIG_H
 
+// Symbols for the game
 #define TETRIMINO_SYMBOL '#'
 #define BOMB_SYMBOL '@'
 #define EMPTY_SPACE ' '
@@ -54,9 +55,9 @@ public:
 	// Adjusted position for the right player
 	static constexpr int RIVAL_POS = BOARD_WIDTH + 18 + 3;
 
+    // Colors
 	static const int COLORS[];
 	static int NUM_OF_COLORS;  
-
 	static void setColorSupport(bool isColorSupported);
 };
 #endif

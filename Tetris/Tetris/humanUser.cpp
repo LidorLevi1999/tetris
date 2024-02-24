@@ -24,7 +24,7 @@ void HumanUser::handleMovement(GameConfig::eKeys direction) {
 		}
 		break;
 
-		// Right player controlsbut 
+		// Right player controls 
 	case GameConfig::eKeys::LEFTP2:
 	case GameConfig::eKeys::RIGHTP2:
 	case GameConfig::eKeys::DROPP2:

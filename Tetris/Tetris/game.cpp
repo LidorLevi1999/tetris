@@ -20,6 +20,7 @@ void GameManager::setupNewGame(bool useColors) {
 	setUpUsers();
 }
 
+// Setup the relevant users
 void GameManager::setUpUsers() {
 	clearScreen();
 
@@ -37,12 +38,6 @@ void GameManager::setUpUsers() {
 		this->RUser = new ComputerUser('R', computerLevel('R'));
 		break;
 	}
-	//this->LUser->resetBoard();
-	//this->LUser->createNewMovingBlock();
-	//this->LUser->resetScore();
-	//this->RUser->resetBoard();
-	//this->RUser->createNewMovingBlock();
-	//this->RUser->resetScore();
 }
 
 // Start the game and handle menu selections
@@ -256,7 +251,7 @@ void GameManager::playGame() {
 			checkUserReachedTop(*this->RUser);
 
 		// Game speed
-		Sleep(150);
+		Sleep(500);
 	}
 }
 

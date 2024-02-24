@@ -132,7 +132,6 @@ bool Block::moveBlock(GameConfig::eKeys key, bool shouldDraw) {
 
 // Returns a random Tetrimino shape
 Block::eTetriminoShape Block::getRandomShape() {
-	//return Block::eTetriminoShape::L;
 	int randomValue = rand() % 100;
 	if (randomValue >= 0 && randomValue < 5)
 		return Block::eTetriminoShape::Bomb;

@@ -14,7 +14,10 @@ class User
 protected:
 	Block movingBlock;
 	Board board;
+
+	// Check if the rotated block is within the game boundaries and does not collide with other blocks
 	bool checkCopiedBlockCollisionWithBoard(Block& copiedBlock);
+
 public:
 	// Constructor
 	User(char side);
@@ -35,6 +38,7 @@ public:
 	// Create a new moving block for the user
 	virtual void createNewMovingBlock();
 
+	// Handles the movement for the user
 	virtual void handleMovement(GameConfig::eKeys direction = GameConfig::eKeys::NONE) = 0;
 
 	// Move the current moving block based on user input
@@ -43,7 +47,10 @@ public:
 	// Rotate the current moving block
 	bool rotateMovingBlock(bool clockWise = true);
 
+	// Increases the score for the user
 	void increaseScore(int scoreReceived) { this->score += scoreReceived; };
+
+	// Resets the score for the user
 	void resetScore() { this->score = 0; };
 
 	// Set if moved method

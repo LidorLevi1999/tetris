@@ -116,7 +116,7 @@ void Board::bombRowAndFixBoard(int row) {
 	}
 }
 
-
+// Performs the explosion of the bomb
 void Board::performBombExplosion(const Point& bombPosition) {
 	int xOffset = this->side == 'L' ? 1 : GameConfig::RIVAL_POS + 1;
 	int yOffset = GameConfig::MIN_Y;
@@ -139,13 +139,14 @@ void Board::performBombExplosion(const Point& bombPosition) {
 	updateBoardPointsAfterExplosion();
 }
 
-
+// Update all board points afterh the explosion
 void Board::updateBoardPointsAfterExplosion() {
 	for (int col = 0; col < GameConfig::BOARD_WIDTH; col++) {
 		dropPointsDown(col);
 	}
 }
 
+// Drops all points down;
 void Board::dropPointsDown(int col) {
 	for (int i = GameConfig::BOARD_HEIGHT - 1; i > 0; i--) {
 		if(this->board[col][i].getSymbol() == EMPTY_SPACE) {

@@ -5,9 +5,6 @@
 #include "gameConfig.h"
 #include <algorithm> 
 #include <random>
-#include <iostream>
-#include "general.h"
-
 
 // Handles the movement of the current block.
 void ComputerUser::handleMovement(GameConfig::eKeys direction) {
@@ -71,17 +68,6 @@ void ComputerUser::calculateBestMovement() {
             bestMovement.clear();
             return;
         }
-        //std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> leastPointsUpMovments = allLeastPointsUpMovements(mostPointsDownMovements);
-        //if (leastPointsUpMovments.size() == 1) {
-        //    bestMovement = leastPointsUpMovments[0].first;
-        //    return;
-        //}
-        //else if (leastPointsUpMovments.size() == 0) {
-        //    bestMovement.clear();
-        //    return;
-        //}
-        //int randomValue = rand() % leastPointsUpMovments.size();
-        //bestMovement = leastPointsUpMovments[randomValue].first;
         std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> mostLeftMovements = allMostLeftMovements(leastPointsUpMovements);
         if (mostLeftMovements.empty()) {
             bestMovement.clear();
@@ -91,38 +77,6 @@ void ComputerUser::calculateBestMovement() {
     }
     this->numOfMove++;
 }
-
-//// Finds all movements with the most downward points.
-//std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::allMostPointsDownMovements(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
-//    std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allValidMovements;
-//    int lowestY = getLowestY(allPossibleMovements[0].second);
-//    int yOffset = 1;
-//    //lowestY -= yOffset;
-//    int amountAtLowestY = 0;
-//    for (const auto& movement : allPossibleMovements) {
-//        Board boardCopy = this->getBoard();
-//        boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
-//        int temp = getAmountOfPointsAtY(boardCopy, lowestY);
-//        int currentLowestY = getLowestY(movement.second);
-//        if (currentLowestY > lowestY) {
-//            lowestY = currentLowestY;
-//            allValidMovements.clear();
-//            allValidMovements.push_back(movement);
-//        }
-//        else if (currentLowestY == lowestY && temp > amountAtLowestY) {
-//            if (temp > amountAtLowestY) {
-//                amountAtLowestY = temp;
-//                allValidMovements.clear();
-//                allValidMovements.push_back(movement);
-//            }
-//            else if (temp == amountAtLowestY) {
-//                allValidMovements.push_back(movement);
-//            }
-//        }
-//    }
-//
-//    return allValidMovements;
-//}
 
 // Gets the amount of points at the given Y coordinate on the board.
 int ComputerUser::getAmountOfPointsAtY(Board& b, const int y) {
@@ -145,33 +99,6 @@ int ComputerUser::getLowestY(const Block& b) {
     return lowest;
 }
 
-// Gets the lowest Y coordinate of the given block and how much there are.
-int ComputerUser::getNumOfHighestY(const Block& b, int* numOfHighest) {
-    *numOfHighest = 1;
-    const Point* points = b.getBlockPoints();
-    int highest = points[0].getY();
-    for (int i = 1; i < 4; i++) {
-        if (points[i].getY() > highest) {
-            highest = points[i].getY();
-            *numOfHighest = 1;
-        }
-        else if (points[i].getY() == highest)
-            (*numOfHighest)++;
-    }
-    return highest;
-}
-
-// Gets the highest Y coordinate of the given block.
-int ComputerUser::getHighestY(const Block& b) {
-    const Point* points = b.getBlockPoints();
-    int highest = points[0].getY();
-    for (int i = 1; i < 4; i++) {
-        if (points[i].getY() < highest)
-            highest = points[i].getY();
-    }
-    return highest;
-}
-
 // Gets the highest Y coordinate of the given block and how much there are.
 int ComputerUser::getNumOfLowestY(const Block& b, int* numOfLowest) {
     *numOfLowest = 1;
@@ -188,65 +115,32 @@ int ComputerUser::getNumOfLowestY(const Block& b, int* numOfLowest) {
     return lowest;
 }
 
-//// Finds all movements with the least upward points.
-//std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>ComputerUser::allLeastPointsUpMovements(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
-//    std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allValidMovements;
-//    
-//    if (allPossibleMovements.empty()) {
-//        return allValidMovements;
-//    }
-//    int highestY = getHighestY(allPossibleMovements[0].second);
-//    int amountAtHighestY = GameConfig::BOARD_WIDTH;
-//    int yOffset = 1;
-//    int temp;
-//
-//    for (const auto& movement : allPossibleMovements) {
-//        temp = getHighestY(movement.second);
-//        if (temp < highestY)
-//            highestY = temp;
-//
-//        Board boardCopy = this->getBoard();
-//        boardCopy.updateBoardWithPoints(movement.second.getBlockPoints());
-//        int pointsAtY = getAmountOfPointsAtY(boardCopy, highestY - yOffset);
-//
-//        if (pointsAtY < amountAtHighestY) {
-//            amountAtHighestY = pointsAtY;
-//            allValidMovements.clear(); 
-//        }
-//        if (pointsAtY == amountAtHighestY) {
-//            allValidMovements.push_back(movement);
-//        }
-//    }
-//
-//    return allValidMovements;
-//}
+// Gets the highest Y coordinate of the given block.
+int ComputerUser::getHighestY(const Block& b) {
+    const Point* points = b.getBlockPoints();
+    int highest = points[0].getY();
+    for (int i = 1; i < 4; i++) {
+        if (points[i].getY() < highest)
+            highest = points[i].getY();
+    }
+    return highest;
+}
 
-// Finds all possible movements for the current moving block.
-//std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::findAllPossibleMovements() {
-//    std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> allPossibleMovements;
-//    std::vector<GameConfig::eKeys> currentMove;
-//    //TODO : Maybe prioritize here if should go for deeper check using exploreAllPossibleMoves
-//    //TODO : Or build another function that doesn't do left and than right movments (using for loops) and without rotations as well
-//    //TODO : As in the worst case, (first movement) there are 5^17 possibilities, and most of them identical
-//    //TODO : (It doesnt matter where lying I tetermino will be.)
-//    //TODO : And we can use more accurate calculation based on Computer level and Highest board y.
-//    int highestY = getHighestPointYAxisValueOnBoard();
-//    Block myBlock = getMovingBlock();
-//    int accurateStartPosition = mapComputerLevelToStartAccurateSearchYPosition();
-//
-//    //exploreAllPossibleMoves(myBlock, currentMove, allPossibleMovements);
-//    int numOfEmptyColumnts = getAmountOfEmptyColumns();
-//
-//    //nonAccurateSearch(myBlock, allPossibleMovements);
-//    
-//    if (highestY <= accurateStartPosition && numOfEmptyColumnts <= myBlock.getIsBomb() ? 1 : 2 && getAmountOfPointsAboveY(this->board, accurateStartPosition) >= 4) {
-//        exploreAllPossibleMoves(myBlock, currentMove, allPossibleMovements);
-//    }
-//    else {
-//        nonAccurateSearch(myBlock, allPossibleMovements);
-//    }
-//    return allPossibleMovements;
-//}
+// Gets the lowest Y coordinate of the given block and how much there are.
+int ComputerUser::getNumOfHighestY(const Block& b, int* numOfHighest) {
+    *numOfHighest = 1;
+    const Point* points = b.getBlockPoints();
+    int highest = points[0].getY();
+    for (int i = 1; i < 4; i++) {
+        if (points[i].getY() > highest) {
+            highest = points[i].getY();
+            *numOfHighest = 1;
+        }
+        else if (points[i].getY() == highest)
+            (*numOfHighest)++;
+    }
+    return highest;
+}
 
 // Finds all movements with the best score.
 std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::allBestScoreMovement(const std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
@@ -268,267 +162,6 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::allB
     }
     return bestScoreMovements;
 }
-
-//SHOULD BE DELETED
-// Recursive function to explore all possible moves
-void ComputerUser::exploreAllPossibleMoves(Block& block, std::vector<GameConfig::eKeys>& moves, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allMoves)
-{
-    if (!checkCopiedBlockCollisionWithBoard(block)) {
-        return;
-    }
-    Block copyBlock = block;
-    copyBlock.moveBlock(downMove);
-    if (!checkCopiedBlockCollisionWithBoard(copyBlock)) {
-        allMoves.push_back(std::make_pair(moves, block));
-        return;
-    }
-
-    Block downBlock = copyBlock;
-    std::vector<GameConfig::eKeys> downMoves = moves;
-    downBlock.moveBlock(downMove);
-    downMoves.push_back(downMove);
-    exploreAllPossibleMoves(downBlock, downMoves, allMoves);
-
-    Block leftBlock = copyBlock;
-    std::vector<GameConfig::eKeys> leftMoves = moves;
-    leftBlock.moveBlock(leftMove);
-    leftMoves.push_back(leftMove);
-    exploreAllPossibleMoves(leftBlock, leftMoves, allMoves);
-
-    Block rightBlock = copyBlock;
-    std::vector<GameConfig::eKeys> rightMoves = moves;
-    rightBlock.moveBlock(rightMove);
-    rightMoves.push_back(rightMove);
-    exploreAllPossibleMoves(rightBlock, rightMoves, allMoves);
-
-    Block rotatedBlock = copyBlock;
-    std::vector<GameConfig::eKeys> rotateMoves = moves;
-    rotatedBlock.rotateClockwise();
-    rotateMoves.push_back(rotateClockwise);
-    exploreAllPossibleMoves(rotatedBlock, rotateMoves, allMoves);
-
-    Block rotatedCounterBlock = copyBlock;
-    std::vector<GameConfig::eKeys> rotateCounterMoves = moves;
-    rotatedCounterBlock.rotateCounterClockwise();
-    rotateCounterMoves.push_back(rotateCounterClockwise);
-    exploreAllPossibleMoves(rotatedCounterBlock, rotateCounterMoves, allMoves);
-}
-
-//SHOULD BE DELETED
-// Gets the highest Y axis value on the board.
-int ComputerUser::getHighestPointYAxisValueOnBoard() {
-    Board copyBoard = this->getBoard();
-    int res = GameConfig::BOARD_HEIGHT;
-    for (int i = GameConfig::BOARD_HEIGHT - 1; i >= 0; i--) {
-        for (int j = 0; j < GameConfig::BOARD_WIDTH; j++) {
-            if (copyBoard.getBoard()[j][i].getSymbol() == TETRIMINO_SYMBOL && res > i) {
-                res = i;
-            }
-        }
-    }
-    return res;
-}
-
-//SHOULD BE DELETED
-// Maps the computer level to start an accurate search Y position.
-int ComputerUser::mapComputerLevelToStartAccurateSearchYPosition() {
-    switch (this->level) {
-    case 0: return 6;
-    case 1:return 8;
-    case 2: return 9;
-    }
-
-    return 9;
-}
-
-//// NEED TO BE DELETED IN CASE NOT IN USE
-//void ComputerUser::nonAccurateSearch(Block myBlock, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
-//    this->board.drawBoard(this->getSide());
-//    this->getMovingBlock().drawBlock();
-//    int leftDistance = getBlockDistanceFromLeftBorder(myBlock);
-//    int rightDistance = getBlockDistanceFromRightBorder(myBlock);
-//    Block copyBlock;
-//    std::vector<GameConfig::eKeys> moves;
-//
-//    // Perform rotations and movements to the left
-//    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
-//        for (int i = 0; i <= leftDistance; i++) { // Adjusted loop condition
-//            copyBlock = myBlock;
-//            moves.clear();
-//            // Rotate the block
-//            for (int j = 0; j <= rotateCount; j++) {
-//                copyBlock.rotateClockwise();
-//                moves.push_back(rotateClockwise);
-//            }
-//            // Move the block to the left
-//            for (int k = 0; k < i; k++) { // Adjusted loop condition
-//                copyBlock.moveBlock(leftMove);
-//                moves.push_back(leftMove);
-//            }
-//            // Move the block down until it collides or reaches the bottom
-//            while (checkCopiedBlockCollisionWithBoard(copyBlock)) { // Added condition to check if the block reached the bottom
-//                copyBlock.moveBlock(downMove);
-//                moves.push_back(downMove);
-//            }
-//            // Add the movement sequence to the list of possible movements
-//            allPossibleMovements.push_back(std::make_pair(moves, copyBlock));
-//        }
-//    }
-//    moves.clear();
-//    // Perform rotations and movements to the right
-//    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
-//        for (int i = 0; i <= rightDistance; i++) { // Adjusted loop condition
-//            copyBlock = myBlock;
-//            moves.clear();
-//            // Rotate the block
-//            for (int j = 0; j <= rotateCount; j++) {
-//                copyBlock.rotateClockwise();
-//                moves.push_back(rotateClockwise);
-//            }
-//            // Move the block to the right
-//            for (int k = 0; k < i; k++) { // Adjusted loop condition
-//                copyBlock.moveBlock(rightMove);
-//                moves.push_back(rightMove);
-//            }
-//            // Move the block down until it collides or reaches the bottom
-//            while (checkCopiedBlockCollisionWithBoard(copyBlock)) { // Added condition to check if the block reached the bottom
-//                copyBlock.moveBlock(downMove);
-//                moves.push_back(downMove);
-//            }
-//            // Add the movement sequence to the list of possible movements
-//            allPossibleMovements.push_back(std::make_pair(moves, copyBlock));
-//        }
-//    }
-//}
-void ComputerUser::nonAccurateSearch(Block myBlock, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
-    this->board.drawBoard(this->getSide());
-    this->getMovingBlock().drawBlock();
-    int leftDistance = getBlockDistanceFromLeftBorder(myBlock);
-    int rightDistance = getBlockDistanceFromRightBorder(myBlock);
-    std::vector<GameConfig::eKeys> moves;
-
-    // Evaluate all possible movements to the left
-    for (int i = 0; i <= leftDistance; ++i) {
-        Block copyBlock = myBlock;
-        moves.clear();
-        // Move the block to the left
-        for (int k = 0; k < i; ++k) {
-            copyBlock.moveBlock(leftMove);
-            moves.push_back(leftMove);
-        }
-        // Rotate the block
-        for (int rotation = 0; rotation < 4; ++rotation) {
-            Block rotatedBlock = copyBlock;
-            for (int j = 0; j < rotation; ++j) {
-                rotatedBlock.rotateClockwise();
-                moves.push_back(rotateClockwise);
-            }
-            // Move the block down until it collides or reaches the bottom
-            while (checkCopiedBlockCollisionWithBoard(rotatedBlock)) {
-                rotatedBlock.moveBlock(downMove);
-                moves.push_back(downMove);
-            }
-            // Add the movement sequence to the list of possible movements
-            allPossibleMovements.push_back(std::make_pair(moves, rotatedBlock));
-        }
-    }
-
-    // Evaluate all possible movements to the right
-    for (int i = 0; i <= rightDistance; ++i) {
-        Block copyBlock = myBlock;
-        moves.clear();
-        // Move the block to the right
-        for (int k = 0; k < i; ++k) {
-            copyBlock.moveBlock(rightMove);
-            moves.push_back(rightMove);
-        }
-        // Rotate the block
-        for (int rotation = 0; rotation < 4; ++rotation) {
-            Block rotatedBlock = copyBlock;
-            for (int j = 0; j < rotation; ++j) {
-                rotatedBlock.rotateClockwise();
-                moves.push_back(rotateClockwise);
-            }
-            // Move the block down until it collides or reaches the bottom
-            while (checkCopiedBlockCollisionWithBoard(rotatedBlock)) {
-                rotatedBlock.moveBlock(downMove);
-                moves.push_back(downMove);
-            }
-            // Add the movement sequence to the list of possible movements
-            allPossibleMovements.push_back(std::make_pair(moves, rotatedBlock));
-        }
-    }
-}
-
-
-
-
-// LIDOR'S ORIGINAL NONACCURATESEARCTH
-//void ComputerUser::nonAccurateSearch(Block myBlock, std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>>& allPossibleMovements) {
-//    this->board.drawBoard(this->getSide());
-//    this->getMovingBlock().drawBlock();
-//    int leftDistance = getBlockDistanceFromLeftBorder(myBlock);
-//    int rightDistance = getBlockDistanceFromRightBorder(myBlock);
-//    Block copyBlock;
-//    std::vector<GameConfig::eKeys> moves;
-//    copyBlock.moveBlock(downMove);
-//    moves.push_back(downMove);
-//
-//    // Perform rotations and movements to the left
-//    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
-//        for (int i = leftDistance; i >= 0; i--) {
-//            copyBlock = myBlock;
-//            moves.clear();
-//            for (int j = 0; j <= rotateCount; j++) {
-//                copyBlock.rotateClockwise();
-//                moves.push_back(rotateClockwise);
-//                copyBlock.moveBlock(downMove);
-//            }
-//            for (int k = 0; k <= i; k++) {
-//                copyBlock.moveBlock(leftMove);  // Move left
-//                moves.push_back(leftMove);
-//                copyBlock.moveBlock(downMove);
-//            }
-//            while (true) {
-//                Block previousCopyBlock = copyBlock;  
-//                copyBlock.moveBlock(downMove);
-//
-//                if (!checkCopiedBlockCollisionWithBoard(copyBlock)) {
-//                    allPossibleMovements.push_back(std::make_pair(moves, previousCopyBlock));
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//    moves.clear();
-//
-//    // Perform rotations and movements to the right
-//    for (int rotateCount = 0; rotateCount < 4; rotateCount++) {
-//        for (int i = rightDistance; i >= 0; i--) {
-//            copyBlock = myBlock;
-//            moves.clear();
-//
-//            for (int j = 0; j <= rotateCount; j++) {
-//                copyBlock.rotateClockwise();
-//                moves.push_back(rotateClockwise);
-//                copyBlock.moveBlock(downMove);
-//            }
-//            for (int k = 0; k <= i; k++) {
-//                copyBlock.moveBlock(rightMove);  // Move left
-//                moves.push_back(rightMove);
-//                copyBlock.moveBlock(downMove);
-//            }
-//            while (true) {
-//                Block previousCopyBlock = copyBlock;
-//                copyBlock.moveBlock(downMove);
-//                if (!checkCopiedBlockCollisionWithBoard(copyBlock)) {
-//                    allPossibleMovements.push_back(std::make_pair(moves, previousCopyBlock));
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//}
 
 // Gets the distance of the given block from the left border.
 int ComputerUser::getBlockDistanceFromLeftBorder(const Block& myBlock) {
@@ -554,29 +187,13 @@ int ComputerUser::getBlockDistanceFromRightBorder(const Block& myBlock) {
     return xOffset + GameConfig::BOARD_WIDTH - righterPointXPos;
 }
 
+
 // Gets the total amount of points above the given Y coordinate on the board.
 int ComputerUser::getAmountOfPointsAboveY(Board& b, const int y) {
     int totalPoints = 0;
     for (int currentY = y; currentY >= 0; --currentY) 
         totalPoints += getAmountOfPointsAtY(b, currentY);
     return totalPoints;
-}
-
-int ComputerUser::getAmountOfEmptyColumns()  {
-    int res = 0;
-    bool isColumnEmpty = true;
-    for (int i = 0; i < GameConfig::BOARD_WIDTH; i++) {
-        for (int j = 0; j < GameConfig::BOARD_HEIGHT; j++) {
-            if (this->board.getBoard()[i][j].getSymbol() != EMPTY_SPACE) {
-                isColumnEmpty = false;
-                break;
-            }
-        }
-        if (isColumnEmpty)
-            res++;
-        isColumnEmpty = true;
-    }
-    return res;
 }
 
 // Finds all possible movements for the current moving block.
@@ -651,6 +268,7 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
             allPossibleMovements.push_back(std::make_pair(rightMovesAfter, beforeBlockedBlock));
         }
 
+        // Rotation is not needed for bomb or for the shape O
         if (currentBlock.getIsBomb() || currentBlock.getShape() == Block::eTetriminoShape::O)
             break;
     }

@@ -80,12 +80,12 @@ void User::createNewMovingBlock() {
 	this->movingBlock = Block(this->side);
 }
 
+// Check if the rotated block is within the game boundaries and does not collide with other blocks
 bool User::checkCopiedBlockCollisionWithBoard(Block& copiedBlock) {
 	// Get the points of the rotated block
 	const Point* points = copiedBlock.getBlockPoints();
 	char pointSymbol;
 	int xOffset = copiedBlock.getSide() == 'L' ? 1 : GameConfig::RIVAL_POS + 1;
-	// Check if the rotated block is within the game boundaries and does not collide with other blocks
 	int xToCheck, yToCheck;
 	for (int i = 0; i < 4; i++) {
 		xToCheck = points[i].getX() - xOffset;

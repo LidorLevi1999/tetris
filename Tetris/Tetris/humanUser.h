@@ -7,7 +7,6 @@
 
 class HumanUser : public User
 {
-
 public:
 	// Constructor
 	HumanUser(char side) : User(side) { 

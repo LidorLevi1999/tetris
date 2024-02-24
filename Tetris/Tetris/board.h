@@ -15,6 +15,7 @@ public:
 	// Constructor
 	Board(char side);
 
+	// Returns the board
 	const Point(*getBoard())[GameConfig::BOARD_HEIGHT] { return this->board; };
 
 	// Clears the entire game board
@@ -29,7 +30,9 @@ public:
 	// Validates and clears full rows, updating the board and returning the score
 	int validateBoard(bool isRealBoard = true);
 
+	// Performs the explosion of the bomb
 	void performBombExplosion(const Point& bombPosition);
+
 private:
 	// Checks if a given row is completely filled with blocks
 	bool isAllRowFull(int row) const;
@@ -37,10 +40,10 @@ private:
 	// Clears a filled row and shifts the above rows down
 	void bombRowAndFixBoard(int row);
 	
-	//update all board points afterh the explosion
+	// Update all board points afterh the explosion
 	void updateBoardPointsAfterExplosion();
 
-	//Drop all points down;
+	// Drops all points down;
 	void dropPointsDown(int col);
 };
 #endif

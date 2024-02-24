@@ -14,6 +14,7 @@ class GameManager
     int option;
 
 private: 
+    // Setup the relevant users
     void setUpUsers();
 public:
     // Constructor
