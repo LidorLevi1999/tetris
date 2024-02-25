@@ -256,7 +256,7 @@ void GameManager::playGame() {
 			checkUserReachedTop(*this->RUser);
 
 		// Game speed
-		Sleep(100);
+		Sleep(500);
 	}
 }
 
