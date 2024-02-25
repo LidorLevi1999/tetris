@@ -176,6 +176,11 @@ void GameManager::showInstructions() {
 	std::cout << "Rotate Counterclockwise: Press 'i' or 'I'" << std::endl;
 	std::cout << "Drop: Press 'm' or 'M'" << std::endl << std::endl;
 
+	// Instructions for the bomb
+	std::cout << "Bomb Instructions:" << std::endl;
+	std::cout << "Bombs can randomly appear during the game with a 5% chance." << std::endl;
+	std::cout << "If a bomb reaches the bottom of the board, it will explode and destroy everything in a 9x9 area." << std::endl << std::endl;
+
 	// Reminder for playing
 	std::cout << "Switch your keyboard to English to play." << std::endl;
 	std::cout << "If needed, press Alt + Shift simultaneously to change the language." << std::endl << std::endl;
@@ -251,7 +256,7 @@ void GameManager::playGame() {
 			checkUserReachedTop(*this->RUser);
 
 		// Game speed
-		Sleep(500);
+		Sleep(100);
 	}
 }
 

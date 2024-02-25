@@ -202,36 +202,31 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
     Block blockCopy = getMovingBlock();
     int leftDistance = getBlockDistanceFromLeftBorder(blockCopy);
     int rightDistance = getBlockDistanceFromRightBorder(blockCopy);
-    std::vector<GameConfig::eKeys> leftMoves;
-    std::vector<GameConfig::eKeys> rightMoves;
+    std::vector<GameConfig::eKeys> rotateMoves;
     std::vector<GameConfig::eKeys> leftMovesAfter;
+    std::vector<GameConfig::eKeys> middleMovesAfter;
     std::vector<GameConfig::eKeys> rightMovesAfter;
-
     for (int rotation = 0; rotation < 4; ++rotation) {
-        leftMoves.clear();
-        rightMoves.clear();
-
+        rotateMoves.clear();
+        bool isFirstMove = true;
         Block currentBlock = blockCopy;
-
         for (int k = 0; k < rotation; k++) {
             // So it won't rotate outside the board
-            if (currentBlock.getShape() == Block::eTetriminoShape::I)
+            if ((currentBlock.getShape() == Block::eTetriminoShape::I) && isFirstMove)
             {
                 currentBlock.moveBlock(downMove);
-                leftMoves.push_back(downMove);
-                rightMoves.push_back(downMove);
+                rotateMoves.push_back(downMove);
+                isFirstMove = false;
             }
             currentBlock.rotateClockwise();
-            leftMoves.push_back(rotateClockwise);
-            rightMoves.push_back(rotateClockwise);
+            rotateMoves.push_back(rotateClockwise);
         }
-
         Block afterRotate = currentBlock;
 
         // Evaluate all possible movements to the left
         for (int col = 0; col <= leftDistance; ++col) {
             currentBlock = afterRotate;
-            leftMovesAfter = leftMoves;
+            leftMovesAfter = rotateMoves;
             // Move the block to the left
             for (int i = 0; i <= col; ++i) {
                 currentBlock.moveBlock(leftMove);
@@ -248,10 +243,23 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
             allPossibleMovements.push_back(std::make_pair(leftMovesAfter, beforeBlockedBlock));
         }
 
+        // Evaluate possible movements to the middle
+        currentBlock = afterRotate;
+        middleMovesAfter = rotateMoves;
+        // Move the block down until it collides or reaches the bottom
+        Block beforeBlockedBlock = currentBlock;
+        while (checkCopiedBlockCollisionWithBoard(currentBlock)) {
+            beforeBlockedBlock = currentBlock;
+            currentBlock.moveBlock(downMove);
+            middleMovesAfter.push_back(downMove);
+        }
+        // Add the movement sequence to the list of possible movements
+        allPossibleMovements.push_back(std::make_pair(middleMovesAfter, beforeBlockedBlock));
+
         // Evaluate all possible movements to the right
         for (int col = 0; col <= rightDistance; ++col) {
             currentBlock = afterRotate;
-            rightMovesAfter = rightMoves;
+            rightMovesAfter = rotateMoves;
             // Move the block to the right
             for (int i = 0; i <= col; ++i) {
                 currentBlock.moveBlock(rightMove);
@@ -267,7 +275,6 @@ std::vector<std::pair<std::vector<GameConfig::eKeys>, Block>> ComputerUser::find
             // Add the movement sequence to the list of possible movements
             allPossibleMovements.push_back(std::make_pair(rightMovesAfter, beforeBlockedBlock));
         }
-
         // Rotation is not needed for bomb or for the shape O
         if (currentBlock.getIsBomb() || currentBlock.getShape() == Block::eTetriminoShape::O)
             break;
