@@ -4,6 +4,7 @@
 #define __USER_H
 
 #include "board.h"
+#include <iostream>
 
 class User
 {
@@ -55,6 +56,9 @@ public:
 
 	// Set if moved method
 	void setMoved(bool moved) { this->didImove = moved; };
+
+	// Destructor
+	virtual ~User() = default;
 };
 
 #endif
